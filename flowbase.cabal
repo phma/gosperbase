@@ -17,3 +17,9 @@ Library
   default-language:    Haskell2010
   Exposed-modules:     Data.FlowsnakeBase
   build-depends:       base >= 4.7 && < 5, array
+
+test-suite test
+  type:			exitcode-stdio-1.0
+  hs-source-dirs:	test
+  main-is:		test.hs
+  build-depends:	base, tasty, tasty-hunit, tasty-quickcheck, tasty-smallcheck
