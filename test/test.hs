@@ -21,10 +21,8 @@ qcProps = testGroup "(checked by QuickCheck)"
   ]
 
 unitTests = testGroup "Unit tests"
-  [ testCase "List comparison (different length)" $
-      [1, 2, 3] `compare` [1,2] @?= GT
-
-  -- the following test does not hold
-  , testCase "List comparison (same length)" $
-      [1, 2, 3] `compare` [1,2,2] @?= LT
+  [ testCase "split343 524288" $
+      (split343 524288) `compare` [184,156,4] @?= EQ,
+    testCase "split343 531441" $
+      (split343 531441) `compare` [134,177,4] @?= EQ
   ]
