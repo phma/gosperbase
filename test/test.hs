@@ -2,6 +2,8 @@ import Test.Tasty
 import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
+import Data.Word
+import Data.FlowsnakeBase
 
 main = defaultMain tests
 
@@ -13,11 +15,9 @@ properties = testGroup "Properties" [qcProps]
 
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "Fermat's little theorem" $
-      \x -> ((x :: Integer)^7 - x) `mod` 7 == 0
-  -- the following property does not hold
-  , QC.testProperty "Fermat's last theorem" $
-      \x y z n ->
-        (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer)
+      \x -> ((x :: Integer)^7 - x) `mod` 7 == 0,
+    QC.testProperty "split-join343" $
+      \x -> join343 (split343 (x :: Word32)) == x
   ]
 
 unitTests = testGroup "Unit tests"
