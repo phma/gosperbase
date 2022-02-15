@@ -36,5 +36,15 @@ unitTests = testGroup "Unit tests"
     testCase "split343 129140163" $
       (split343 129140163) `compare` [320,230,68,3] @?= EQ,
     testCase "split343 134217728" $
-      (split343 134217728) `compare` [113,285,111,3] @?= EQ
+      (split343 134217728) `compare` [113,285,111,3] @?= EQ,
+    testCase "add7 0 0 0" $
+      (add7 0 0 0) `compare` (0,0) @?= EQ,
+    testCase "add7 1 6 0" $
+      (add7 1 6 0) `compare` (0,0) @?= EQ,
+    testCase "add7 2 5 0" $
+      (add7 2 5 0) `compare` (0,0) @?= EQ,
+    testCase "add7 3 4 0" $
+      (add7 3 4 0) `compare` (0,0) @?= EQ,
+    testCase "add7 1 1 1" $
+      (add7 1 1 1) `compare` (3,1) @?= EQ
   ]
