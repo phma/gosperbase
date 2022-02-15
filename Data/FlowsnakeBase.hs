@@ -22,7 +22,7 @@ aTable=array ((0,0),(6,6))
     ((4,0), 4), ((4,1), 5), ((4,2), 6), ((4,3), 0), ((4,4),29), ((4,5),37), ((4,6),31),
     ((5,0), 5), ((5,1),13), ((5,2), 0), ((5,3), 1), ((5,4),37), ((5,5),38), ((5,6), 4),
     ((6,0), 6), ((6,1), 0), ((6,2),43), ((6,3), 2), ((6,4),31), ((6,5), 4), ((6,6),47)
-  ]
+  ] :: Array (Word8,Word8) Word8
 
 mTable=array ((0,0),(6,6)) -- Multiplication table for flowsnake base
   [ ((0,0),0), ((0,1),0), ((0,2),0), ((0,3),0), ((0,4),0), ((0,5),0), ((0,6),0),
@@ -32,7 +32,7 @@ mTable=array ((0,0),(6,6)) -- Multiplication table for flowsnake base
     ((4,0),0), ((4,1),4), ((4,2),1), ((4,3),5), ((4,4),2), ((4,5),6), ((4,6),3),
     ((5,0),0), ((5,1),5), ((5,2),3), ((5,3),1), ((5,4),6), ((5,5),4), ((5,6),2),
     ((6,0),0), ((6,1),6), ((6,2),5), ((6,3),4), ((6,4),3), ((6,5),2), ((6,6),1)
-  ]
+  ] :: Array (Word8,Word8) Word8
 
 th7dig :: (Integral a) => Int -> a -> a
 th7dig pos num = (num `div` 7^pos) `mod` 7
@@ -54,3 +54,13 @@ join7_3 (n0:n1:n2:ns) = 49*n2+7*n1+n0 : join7_3 ns
 join343 :: [Word32] -> Word32
 join343 [] = 0
 join343 (n:ns) = n + 343 * join343 ns
+{-
+add7 :: Integral n => n -> n -> n -> (n,n)
+-- a, b, c, sum, and carry are all in [0 .. 6].
+add7 a b c = (sum3,carry) where
+  sum2 = (aTable ! (a,b)) `div` 7
+  car2 = (aTable ! (a,b)) `mod` 7
+  sum3 = (aTable ! (sum2,c)) `div` 7
+  car3 = (aTable ! (sum2,c)) `mod` 7
+  carry = aTable ! (car2,car3)
+  -}
