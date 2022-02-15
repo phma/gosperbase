@@ -1,3 +1,4 @@
+{-# LANGUAGE InstanceSigs #-}
 import Test.Tasty
 import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
@@ -6,6 +7,12 @@ import Data.Word
 import Data.FlowsnakeBase
 
 main = defaultMain tests
+
+newtype Digit7 = Digit7 Int deriving Show
+
+instance Arbitrary Digit7 where
+  arbitrary :: Gen Digit7
+  arbitrary = Digit7 <$> chooseInt (0,6)
 
 tests :: TestTree
 tests = testGroup "Tests" [properties, unitTests]
@@ -17,7 +24,11 @@ qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "Fermat's little theorem" $
       \x -> ((x :: Integer)^7 - x) `mod` 7 == 0,
     QC.testProperty "split-join343" $
-      \x -> join343 (split343 (x :: Word32)) == x
+      \x -> join343 (split343 (x :: Word32)) == x,
+    QC.testProperty "add7 is commutative 2" $
+      \(Digit7 a) (Digit7 b) (Digit7 c) -> add7 a b c == add7 c b a,
+    QC.testProperty "add7 is commutative 3" $
+      \(Digit7 a) (Digit7 b) (Digit7 c) -> add7 a b c == add7 b c a
   ]
 
 unitTests = testGroup "Unit tests"
