@@ -54,13 +54,15 @@ join7_3 (n0:n1:n2:ns) = 49*n2+7*n1+n0 : join7_3 ns
 join343 :: [Word32] -> Word32
 join343 [] = 0
 join343 (n:ns) = n + 343 * join343 ns
-{-
+
 add7 :: Integral n => n -> n -> n -> (n,n)
 -- a, b, c, sum, and carry are all in [0 .. 6].
-add7 a b c = (sum3,carry) where
-  sum2 = (aTable ! (a,b)) `div` 7
-  car2 = (aTable ! (a,b)) `mod` 7
-  sum3 = (aTable ! (sum2,c)) `div` 7
-  car3 = (aTable ! (sum2,c)) `mod` 7
+add7 a b c = (fromIntegral sum3,fromIntegral carry) where
+  a8 = fromIntegral a
+  b8 = fromIntegral b
+  c8 = fromIntegral c
+  sum2 = (aTable ! (a8,b8)) `mod` 7
+  car2 = (aTable ! (a8,b8)) `div` 7
+  sum3 = (aTable ! (sum2,c8)) `mod` 7
+  car3 = (aTable ! (sum2,c8)) `div` 7
   carry = aTable ! (car2,car3)
-  -}
