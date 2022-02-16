@@ -34,6 +34,10 @@ mTable=array ((0,0),(6,6)) -- Multiplication table for flowsnake base
     ((6,0),0), ((6,1),6), ((6,2),5), ((6,3),4), ((6,4),3), ((6,5),2), ((6,6),1)
   ] :: Array (Word8,Word8) Word8
 
+--stripLeading0 :: (Integral a) => [a] -> [a]
+--stripLeading0 [] = []
+--stripLeading0 0:xs =
+
 th7dig :: (Integral a) => Int -> a -> a
 th7dig pos num = (num `div` 7^pos) `mod` 7
 
