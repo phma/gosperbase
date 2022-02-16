@@ -56,7 +56,7 @@ join343 [] = 0
 join343 (n:ns) = n + 343 * join343 ns
 
 add7 :: Integral n => n -> n -> n -> (n,n)
--- a, b, c, sum, and carry are all in [0 .. 6].
+-- a, b, c, sum3, and carry are all in [0 .. 6].
 add7 a b c = (fromIntegral sum3,fromIntegral carry) where
   a8 = fromIntegral a
   b8 = fromIntegral b
@@ -66,3 +66,14 @@ add7 a b c = (fromIntegral sum3,fromIntegral carry) where
   sum3 = (aTable ! (sum2,c8)) `mod` 7
   car3 = (aTable ! (sum2,c8)) `div` 7
   carry = aTable ! (car2,car3)
+
+add7s_c :: Integral n => n -> [n] -> [n] -> [n]
+add7s_c 0 [] ys = ys
+add7s_c 0 xs [] = xs
+add7s_c c [] ys = add7s_c c [0] ys
+add7s_c c xs [] = add7s_c c xs [0]
+add7s_c c (x:xs) (y:ys) = z:add7s_c c1 xs ys where
+  (z,c1) = add7 x y c
+
+add7s = add7s_c 0
+
