@@ -45,6 +45,10 @@ split7 :: Word32 -> [Word32]
 split7 0 = []
 split7 n = (n `mod` 7) : split7 (n `div` 7)
 
+join7 :: [Word32] -> Word32
+join7 [] = 0
+join7 (n:ns) = (join7 ns) * 7 + n
+
 split343 :: Word32 -> [Word32]
 split343 0 = []
 split343 n = (n `mod` 343) : split343 (n `div` 343)
@@ -81,3 +85,5 @@ add7s_c c (x:xs) (y:ys) = z:add7s_c c1 xs ys where
 
 add7s = add7s_c 0
 
+add343 :: Word32 -> Word32 -> Word32
+add343 a b = join7 (add7s (split7 a) (split7 b))
