@@ -87,3 +87,9 @@ add7s = add7s_c 0
 
 add343 :: Word32 -> Word32 -> Word32
 add343 a b = join7 (add7s (split7 a) (split7 b))
+
+mul7s_dig :: Integral n => n -> [n] -> [n]
+mul7s_dig 0 _ = []
+mul7s_dig a [] = []
+mul7s_dig a (b:bs) = (fromIntegral (mTable ! (fromIntegral a,fromIntegral b))):
+  mul7s_dig a bs
