@@ -1,5 +1,5 @@
 module Data.FlowsnakeBase where
-import Data.Array
+import Data.Array.Unboxed
 import Data.Word
 
 -- 2 3
