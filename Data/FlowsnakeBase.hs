@@ -83,6 +83,7 @@ add7s_c c xs [] = add7s_c c xs [0]
 add7s_c c (x:xs) (y:ys) = z:add7s_c c1 xs ys where
   (z,c1) = add7 x y c
 
+add7s :: Integral n => [n] -> [n] -> [n]
 add7s = add7s_c 0
 
 add343 :: Word32 -> Word32 -> Word32
@@ -93,3 +94,7 @@ mul7s_dig 0 _ = []
 mul7s_dig a [] = []
 mul7s_dig a (b:bs) = (fromIntegral (mTable ! (fromIntegral a,fromIntegral b))):
   mul7s_dig a bs
+
+mul7s :: Integral n => [n] -> [n] -> [n]
+mul7s [] _ = []
+mul7s (a:as) bs = add7s (mul7s_dig a bs) (0:mul7s as bs)
