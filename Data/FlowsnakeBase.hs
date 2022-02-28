@@ -102,3 +102,16 @@ mul7s_dig a (b:bs) = (fromIntegral (mTable ! (fromIntegral a,fromIntegral b))):
 mul7s :: Integral n => [n] -> [n] -> [n]
 mul7s [] _ = []
 mul7s (a:as) bs = add7s (mul7s_dig a bs) (0:mul7s as bs)
+
+mul343 :: Word32 -> Word32 -> Word32
+mul343 a b = join7 (mul7s (split7 a) (split7 b))
+
+-- The maximum sum is 6566 in base 7; the maximum product is 656543 in base 7.
+
+aTable343=array ((0,0),(342,342))
+  [((fromIntegral x,fromIntegral y),fromIntegral (add343 (fromIntegral x) (fromIntegral y))) | x<-[0..342], y<-[0..342]]
+  :: Array (Word16,Word16) Word16
+
+mTable343=array ((0,0),(342,342))
+  [((fromIntegral x,fromIntegral y),mul343 (fromIntegral x) (fromIntegral y)) | x<-[0..342], y<-[0..342]]
+  :: Array (Word16,Word16) Word32
