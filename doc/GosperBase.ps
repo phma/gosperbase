@@ -25,6 +25,18 @@
   -12.3 7.1 rmoveto (6) s+ c.
 } bind def
 
+/write49 % ( str x y )
+{
+  2 index (0) s+ 2 index 2 index write7
+  2 index (1) s+ 2 index 20.5 add 2 index 7.1 sub write7
+  2 index (2) s+ 2 index 4.1 sub 2 index 21.3 add write7
+  2 index (3) s+ 2 index 16.4 add 2 index 14.2 add write7
+  2 index (4) s+ 2 index 16.4 sub 2 index 14.2 sub write7
+  2 index (5) s+ 2 index 4.1 add 2 index 21.3 sub write7
+  2 index (6) s+ 2 index 20.5 sub 2 index 7.1 add write7
+  pop pop pop
+} bind def
+
 /mmscale { 720 254 div dup scale } bind def
 %%EndProlog
 %%Page: 1 1
@@ -38,6 +50,12 @@ gsave mmscale
 (4) -16.4 -14.2 write7
 (5) 4.1 -21.3 write7
 (6) -20.5 7.1 write7
+(1) 45.1 -35.5 write49
+(2) 8.2 56.8 write49
+(3) 53.3 21.3 write49
+(4) -53.3 -21.3 write49
+(5) -8.2 -56.8 write49
+(6) -45.1 35.5 write49
 grestore showpage
 %%BeginTrailer
 %%Pages: 1
