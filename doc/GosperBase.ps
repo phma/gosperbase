@@ -7,19 +7,37 @@
 { dup stringwidth -2 div exch -2 div exch
 3 2 roll 2 index 2 index rmoveto show rmoveto } bind def
 
+/s+ % (a) (b) -> (ab)
+   { exch dup length
+     2 index length add string
+     dup dup 4 2 roll copy length
+     4 -1 roll putinterval
+   } bind def
+
+/write7 % ( str x y )
+{
+  moveto dup (0) s+ c.
+  8.2 0 rmoveto dup (1) s+ c.
+  -12.3 7.1 rmoveto dup (2) s+ c.
+  8.2 0 rmoveto dup (3) s+ c.
+  -8.2 -14.2 rmoveto dup (4) s+ c.
+  8.2 0 rmoveto dup (5) s+ c.
+  -12.3 7.1 rmoveto (6) s+ c.
+} bind def
+
 /mmscale { 720 254 div dup scale } bind def
 %%EndProlog
 %%Page: 1 1
 gsave mmscale
 105 148.5 translate 0 rotate
 /Helvetica findfont 3 scalefont setfont
-0 0 moveto (0) c.
-8.2 0 rmoveto (1) c.
--12.3 7.1 rmoveto (2) c.
-8 0 rmoveto (3) c.
--8.2 -14.2 rmoveto (4) c.
-8 0 rmoveto (5) c.
--12.3 7.1 rmoveto (6) c.
+() 0 0 write7
+(1) 20.5 -7.1 write7
+(2) -4.1 21.3 write7
+(3) 16.4 14.2 write7
+(4) -16.4 -14.2 write7
+(5) 4.1 -21.3 write7
+(6) -20.5 7.1 write7
 grestore showpage
 %%BeginTrailer
 %%Pages: 1
