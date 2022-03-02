@@ -1,4 +1,4 @@
-module Data.FlowsnakeBase where
+module Data.GosperBase where
 import Data.Array.Unboxed
 import Data.Word
 
@@ -6,7 +6,7 @@ import Data.Word
 --6 0 1
 -- 4 5
 
--- Addition table for flowsnake base. In base 7:
+-- Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
 -- 1,12, 3,34, 5,16, 0
 -- 2, 3,24,25, 6, 0,61
