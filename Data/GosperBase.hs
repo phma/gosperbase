@@ -47,6 +47,8 @@ stripLeading0 [] = []
 stripLeading0 [0] = []
 stripLeading0 (x:xs) = x:(stripLeading0 xs)
 
+-- Operations on single digits
+
 th7dig :: (Integral a) => Int -> a -> a
 th7dig pos num = (num `div` 7^pos) `mod` 7
 
@@ -116,6 +118,7 @@ mul7s (a:as) bs = add7s (mul7s_dig a bs) (0:mul7s as bs)
 mul343 :: Word32 -> Word32 -> Word32
 mul343 a b = join7 (mul7s (split7 a) (split7 b))
 
+-- Operations on groups of three and six digits
 -- The maximum sum is 6566 in base 7; the maximum product is 656543 in base 7.
 
 aTable343=array ((0,0),(342,342))
@@ -129,3 +132,36 @@ mTable343=array ((0,0),(342,342))
 negTable=array (0,117648)
   [(fromIntegral x,join7 (map neg7 (split7 x))) | x<-[0..117648]]
   :: Array Word32 Word32
+
+add343c :: Integral n => n -> n -> n -> (n,n)
+-- a, b, c, sum3, and carry are all in [0 .. 342].
+add343c a b c = (fromIntegral sum3,fromIntegral carry) where
+  a16 = fromIntegral a
+  b16 = fromIntegral b
+  c16 = fromIntegral c
+  sum2 = (aTable343 ! (a16,b16)) `mod` 343
+  car2 = (aTable343 ! (a16,b16)) `div` 343
+  sum3 = (aTable343 ! (sum2,c16)) `mod` 343
+  car3 = (aTable343 ! (sum2,c16)) `div` 343
+  carry = aTable343 ! (car2,car3)
+
+add343s_c :: Integral n => n -> [n] -> [n] -> [n]
+add343s_c 0 [] ys = ys
+add343s_c 0 xs [] = xs
+add343s_c c [] ys = add343s_c c [0] ys
+add343s_c c xs [] = add343s_c c xs [0]
+add343s_c c (x:xs) (y:ys) = z:add343s_c c1 xs ys where
+  (z,c1) = add343c x y c
+
+add343s :: Integral n => [n] -> [n] -> [n]
+add343s = add343s_c 0
+
+mul343c :: Integral n => n -> n -> (n,n)
+mul343c a b = (fromIntegral p,fromIntegral c) where
+  a16 = fromIntegral a
+  b16 = fromIntegral b
+  p = (mTable343 ! (a16,b16)) `mod` 343
+  c = (mTable343 ! (a16,b16)) `div` 343
+
+-- Operations on limbs (groups of eleven digits)
+
