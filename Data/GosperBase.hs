@@ -2,9 +2,14 @@ module Data.GosperBase where
 import Data.Array.Unboxed
 import Data.Word
 
--- 2 3
---6 0 1
--- 4 5
+{- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
+   because it is the scale factor from one Gosper island to the next bigger one.
+   The digits are cyclotomic:
+    2 3
+   6 0 1
+    4 5
+   For layout of all numbers up to 3 digits, see doc/GosperBase.ps .
+-}
 
 -- Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
@@ -24,7 +29,7 @@ aTable=array ((0,0),(6,6))
     ((6,0), 6), ((6,1), 0), ((6,2),43), ((6,3), 2), ((6,4),31), ((6,5), 4), ((6,6),47)
   ] :: Array (Word8,Word8) Word8
 
-mTable=array ((0,0),(6,6)) -- Multiplication table for flowsnake base
+mTable=array ((0,0),(6,6)) -- Multiplication table for Gosper base
   [ ((0,0),0), ((0,1),0), ((0,2),0), ((0,3),0), ((0,4),0), ((0,5),0), ((0,6),0),
     ((1,0),0), ((1,1),1), ((1,2),2), ((1,3),3), ((1,4),4), ((1,5),5), ((1,6),6),
     ((2,0),0), ((2,1),2), ((2,2),4), ((2,3),6), ((2,4),1), ((2,5),3), ((2,6),5),
