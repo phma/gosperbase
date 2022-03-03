@@ -98,6 +98,11 @@ add7s = add7s_c 0
 add343 :: Word32 -> Word32 -> Word32
 add343 a b = join7 (add7s (split7 a) (split7 b))
 
+neg7 :: Integral n => n -> n
+-- Negates a digit in [0..6]. Any other argument will get a wrong answer.
+neg7 0 = 0
+neg7 a = 7 - a
+
 mul7s_dig :: Integral n => n -> [n] -> [n]
 mul7s_dig 0 _ = []
 mul7s_dig a [] = []
@@ -120,3 +125,7 @@ aTable343=array ((0,0),(342,342))
 mTable343=array ((0,0),(342,342))
   [((fromIntegral x,fromIntegral y),mul343 (fromIntegral x) (fromIntegral y)) | x<-[0..342], y<-[0..342]]
   :: Array (Word16,Word16) Word32
+
+negTable=array (0,117648)
+  [(fromIntegral x,join7 (map neg7 (split7 x))) | x<-[0..117648]]
+  :: Array Word32 Word32
