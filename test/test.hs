@@ -14,6 +14,18 @@ instance Arbitrary Digit7 where
   arbitrary :: Gen Digit7
   arbitrary = Digit7 <$> chooseInt (0,6)
 
+newtype Digit343 = Digit343 Int deriving Show
+
+instance Arbitrary Digit343 where
+  arbitrary :: Gen Digit343
+  arbitrary = Digit343 <$> chooseInt (0,342)
+
+newtype Limb = Limb Word32 deriving Show
+
+instance Arbitrary Limb where
+  arbitrary :: Gen Limb
+  arbitrary = Limb <$> choose (0,1977326742)
+
 tests :: TestTree
 tests = testGroup "Tests" [properties, unitTests]
 
@@ -26,7 +38,11 @@ qcProps = testGroup "(checked by QuickCheck)"
     QC.testProperty "add7 is commutative 2" $
       \(Digit7 a) (Digit7 b) (Digit7 c) -> add7 a b c == add7 c b a,
     QC.testProperty "add7 is commutative 3" $
-      \(Digit7 a) (Digit7 b) (Digit7 c) -> add7 a b c == add7 b c a
+      \(Digit7 a) (Digit7 b) (Digit7 c) -> add7 a b c == add7 b c a,
+    QC.testProperty "mul343c is commutative" $
+      \(Digit343 a) (Digit343 b) -> mul343c a b == mul343c b a,
+    QC.testProperty "limb additive inverse" $
+      \(Limb a) -> addLimbs a (negateLimb a) 0 == (0,0)
   ]
 
 unitTests = testGroup "Unit tests"
