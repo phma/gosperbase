@@ -156,6 +156,12 @@ add343s_c c (x:xs) (y:ys) = z:add343s_c c1 xs ys where
 add343s :: Integral n => [n] -> [n] -> [n]
 add343s = add343s_c 0
 
+addCarries343 :: Integral n => n -> [(n,n)] -> [n]
+addCarries343 0 [] = []
+addCarries343 c [] = [c]
+addCarries343 c ((a,b):xs) = s:addCarries343 d xs where
+  (s,d) = add343c a 0 c
+
 mul343c :: Integral n => n -> n -> (n,n)
 mul343c a b = (fromIntegral p,fromIntegral c) where
   a16 = fromIntegral a
@@ -163,11 +169,13 @@ mul343c a b = (fromIntegral p,fromIntegral c) where
   p = (mTable343 ! (a16,b16)) `mod` 343
   c = (mTable343 ! (a16,b16)) `div` 343
 
+mul343s_pair :: Integral n => n -> [n] -> [(n,n)]
+mul343s_pair 0 _ = []
+mul343s_pair a [] = []
+mul343s_pair a (b:bs) = (mul343c a b):mul343s_pair a bs
+
 mul343s_dig :: Integral n => n -> [n] -> [n]
-mul343s_dig 0 _ = []
-mul343s_dig a [] = []
-mul343s_dig a (b:bs) = (fromIntegral (mTable343 ! (fromIntegral a,fromIntegral b))):
-  mul343s_dig a bs
+mul343s_dig a b = addCarries343 0 (mul343s_pair a b)
 
 mul343s :: Integral n => [n] -> [n] -> [n]
 mul343s [] _ = []
