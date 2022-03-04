@@ -175,3 +175,23 @@ mul343s (a:as) bs = add343s (mul343s_dig a bs) (0:mul343s as bs)
 
 -- Operations on limbs (groups of eleven digits)
 
+negateLimb :: Word32 -> Word32
+negateLimb a = 117649 * b + c where
+  b = negTable ! (a `div` 117649)
+  c = negTable ! (a `mod` 117649)
+
+addLimbs :: Word32 -> Word32 -> Word32 -> (Word32,Word32)
+addLimbs a b c = (sum3,carry) where
+  sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ [0,0,0,0]
+  sum3l = take 3 sums ++ [(sums !! 3) `mod` 49]
+  carryl = (sums !! 3) `div` 49 : (drop 4 sums)
+  sum3 = join343 sum3l
+  carry = join343 carryl
+
+mulLimbs :: Word32 -> Word32 -> (Word32,Word32)
+mulLimbs a b = (prod2,carry) where
+  prodl = mul343s (split343 a) (split343 b) ++ [0,0,0,0]
+  prod2l = take 3 prodl ++ [(prodl !! 3) `mod` 49]
+  carryl = (prodl !! 3) `div` 49 : (drop 4 prodl)
+  prod2 = join343 prod2l
+  carry = join343 carryl
