@@ -24,4 +24,4 @@ test-suite test
   hs-source-dirs:	test
   main-is:		test.hs
   build-depends:	base, tasty, tasty-hunit, tasty-quickcheck, tasty-smallcheck,
-			flowbase
+			gosperbase

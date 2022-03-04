@@ -4,7 +4,7 @@ import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
 import Data.Word
-import Data.FlowsnakeBase
+import Data.GosperBase
 
 main = defaultMain tests
 
