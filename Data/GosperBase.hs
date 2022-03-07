@@ -1,6 +1,8 @@
 module Data.GosperBase where
 import Data.Array.Unboxed
 import Data.Word
+import qualified Data.Sequence as Seq
+import Data.Sequence ((><), (<|), (|>))
 
 {- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
    because it is the scale factor from one Gosper island to the next bigger one.
@@ -203,3 +205,9 @@ mulLimbs a b = (prod2,carry) where
   carryl = (prodl !! 3) `div` 49 : (drop 4 prodl)
   prod2 = join343 prod2l
   carry = join343 carryl
+
+{-
+  A mantissa is a sequence of limbs. There are two kinds: right-justified,
+  for integers, and left-justified, for floating point. Addition is different,
+  but multiplication is the same.
+-}
