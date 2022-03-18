@@ -2,7 +2,7 @@ module Data.GosperBase where
 import Data.Array.Unboxed
 import Data.Word
 import qualified Data.Sequence as Seq
-import Data.Sequence ((><), (<|), (|>))
+import Data.Sequence ((><), (<|), (|>), Seq((:<|)))
 
 {- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
    because it is the scale factor from one Gosper island to the next bigger one.
@@ -40,14 +40,6 @@ mTable=array ((0,0),(6,6)) -- Multiplication table for Gosper base
     ((5,0),0), ((5,1),5), ((5,2),3), ((5,3),1), ((5,4),6), ((5,5),4), ((5,6),2),
     ((6,0),0), ((6,1),6), ((6,2),5), ((6,3),4), ((6,4),3), ((6,5),2), ((6,6),1)
   ] :: Array (Word8,Word8) Word8
-
-stripLeading0 :: (Integral a) => [a] -> [a]
--- Removes the leading 0 (which is at the tail, the most significant end)
--- from a list of numbers.
--- Bug: removes only one leading 0.
-stripLeading0 [] = []
-stripLeading0 [0] = []
-stripLeading0 (x:xs) = x:(stripLeading0 xs)
 
 -- Operations on single digits
 
@@ -211,3 +203,11 @@ mulLimbs a b = (prod2,carry) where
   for integers, and left-justified, for floating point. Addition is different,
   but multiplication is the same.
 -}
+
+stripLeading0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
+-- Removes the leading 0 from a sequence of numbers.
+-- If it's a right-justified mantissa, this has no effect on the value.
+-- If it's a left-justified mantissa, this multiplies by G^11.
+stripLeading0 empty = empty
+stripLeading0 (0:<|xs) = stripLeading0 xs
+stripLeading0 (x:<|xs) = x<|xs
