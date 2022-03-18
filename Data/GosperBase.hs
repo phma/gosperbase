@@ -2,7 +2,7 @@ module Data.GosperBase where
 import Data.Array.Unboxed
 import Data.Word
 import qualified Data.Sequence as Seq
-import Data.Sequence ((><), (<|), (|>), Seq((:<|)))
+import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 
 {- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
    because it is the scale factor from one Gosper island to the next bigger one.
@@ -211,3 +211,11 @@ stripLeading0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
 stripLeading0 Seq.Empty = Seq.Empty
 stripLeading0 (0:<|xs) = stripLeading0 xs
 stripLeading0 (x:<|xs) = x<|xs
+
+stripTrailing0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
+-- Removes the trailing 0 from a sequence of numbers.
+-- If it's a right-justified mantissa, this divides by G^11.
+-- If it's a left-justified mantissa, has no effect on the value.
+stripTrailing0 Seq.Empty = Seq.Empty
+stripTrailing0 (xs:|>0) = stripTrailing0 xs
+stripTrailing0 (xs:|>x) = xs|>x
