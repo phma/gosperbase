@@ -208,6 +208,6 @@ stripLeading0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
 -- Removes the leading 0 from a sequence of numbers.
 -- If it's a right-justified mantissa, this has no effect on the value.
 -- If it's a left-justified mantissa, this multiplies by G^11.
-stripLeading0 empty = empty
+stripLeading0 Seq.Empty = Seq.Empty
 stripLeading0 (0:<|xs) = stripLeading0 xs
 stripLeading0 (x:<|xs) = x<|xs
