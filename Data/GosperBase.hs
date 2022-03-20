@@ -221,7 +221,7 @@ stripTrailing0 (xs:|>0) = stripTrailing0 xs
 stripTrailing0 (xs:|>x) = xs|>x
 
 splitLimb :: Word32 -> Word32 -> (Word32,Word32)
--- n is in [0..11].
+-- n is in [0..11]. Values outside this range return garbage.
 -- Shifts limb left by n digits, a being the more significant limb.
 splitLimb n limb = (a,b) where
   x = 7 ^ n
@@ -230,9 +230,27 @@ splitLimb n limb = (a,b) where
   b = (limb `mod` y) * x
 
 shiftLSmall :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
--- n is in [0..11].
+-- n is in [0..11]. Values outside this range return garbage.
 -- Shifts limbs left by n. Result has one more limb.
 shiftLSmall Seq.Empty _ = Seq.singleton 0
 shiftLSmall (limb:<|limbs) n = splh<|(spll+res)<|ress where
   (splh,spll) = splitLimb n limb
   res:<|ress = shiftLSmall limbs n
+
+shiftRSmall limbs n = shiftLSmall limbs (11-n)
+
+shiftLLimbs :: Integral a => Seq.Seq a -> a -> Seq.Seq a
+shiftLLimbs limbs 0 = limbs
+shiftLLimbs limbs n = (shiftLLimbs limbs (n-1)) |> 0
+
+shiftRLimbs :: Integral a => Seq.Seq a -> a -> Seq.Seq a
+shiftRLimbs limbs 0 = limbs
+shiftRLimbs limbs n = 0 <| (shiftRLimbs limbs (n-1))
+
+shiftLRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
+shiftLRjust limbs n = shiftLLimbs (shiftLSmall limbs (n `mod` 11)) (n `div` 11)
+
+shiftRRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
+shiftRRjust limbs n = Seq.take (length res - (fromIntegral m)) res where
+  res = shiftRLimbs (shiftRSmall limbs (n `mod` 11)) (n `div` 11)
+  m = n `div` 11 + 1
