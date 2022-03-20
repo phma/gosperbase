@@ -84,5 +84,17 @@ unitTests = testGroup "Unit tests"
       (Seq.fromList [1,2,3,4,5,6]) @?= EQ,
     testCase "stripTrailing0 [1,2,3,4,5,6]" $
       (stripTrailing0 (Seq.fromList [1,2,3,4,5,6])) `compare`
-      (Seq.fromList [1,2,3,4,5,6]) @?= EQ
+      (Seq.fromList [1,2,3,4,5,6]) @?= EQ,
+    testCase "splitLimb 0 (5^13)" $
+      (splitLimb 0 (5^13)) `compare` (0,1220703125) @?= EQ,
+    testCase "splitLimb 1 (5^13)" $
+      (splitLimb 1 (5^13)) `compare` (4,635614903) @?= EQ,
+    testCase "splitLimb 5 (5^13)" $
+      (splitLimb 5 (5^13)) `compare` (10375,1592463250) @?= EQ,
+    testCase "splitLimb 6 (5^13)" $
+      (splitLimb 6 (5^13)) `compare` (72630,1260609035) @?= EQ,
+    testCase "splitLimb 10 (5^13)" $
+      (splitLimb 10 (5^13)) `compare` (174386160,1412376245) @?= EQ,
+    testCase "splitLimb 11 (5^13)" $
+      (splitLimb 11 (5^13)) `compare` (1220703125,0) @?= EQ
   ]

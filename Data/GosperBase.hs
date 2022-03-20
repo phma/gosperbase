@@ -219,3 +219,12 @@ stripTrailing0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
 stripTrailing0 Seq.Empty = Seq.Empty
 stripTrailing0 (xs:|>0) = stripTrailing0 xs
 stripTrailing0 (xs:|>x) = xs|>x
+
+splitLimb :: Word32 -> Word32 -> (Word32,Word32)
+-- n is in [0..11].
+-- Shifts limb left by n digits, a being the more significant limb.
+splitLimb n limb = (a,b) where
+  x = 7 ^ n
+  y = 7 ^ (11-n)
+  a = limb `div` y
+  b = (limb `mod` y) * x
