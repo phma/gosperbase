@@ -228,3 +228,11 @@ splitLimb n limb = (a,b) where
   y = 7 ^ (11-n)
   a = limb `div` y
   b = (limb `mod` y) * x
+
+shiftLSmall :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
+-- n is in [0..11].
+-- Shifts limbs left by n. Result has one more limb.
+shiftLSmall Seq.Empty _ = Seq.singleton 0
+shiftLSmall (limb:<|limbs) n = splh<|(spll+res)<|ress where
+  (splh,spll) = splitLimb n limb
+  res:<|ress = shiftLSmall limbs n
