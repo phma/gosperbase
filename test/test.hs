@@ -5,6 +5,7 @@ import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
 import Data.Word
 import Data.GosperBase
+import qualified Data.Sequence as Seq
 
 main = defaultMain tests
 
@@ -71,5 +72,17 @@ unitTests = testGroup "Unit tests"
     testCase "add7 3 4 0" $
       (add7 3 4 0) `compare` (0,0) @?= EQ,
     testCase "add7 1 1 1" $
-      (add7 1 1 1) `compare` (3,1) @?= EQ
+      (add7 1 1 1) `compare` (3,1) @?= EQ,
+    testCase "stripLeading0 [0,1,2,3,4,5,6,0]" $
+      (stripLeading0 (Seq.fromList [0,1,2,3,4,5,6,0])) `compare`
+      (Seq.fromList [1,2,3,4,5,6,0]) @?= EQ,
+    testCase "stripTrailing0 [0,1,2,3,4,5,6,0]" $
+      (stripTrailing0 (Seq.fromList [0,1,2,3,4,5,6,0])) `compare`
+      (Seq.fromList [0,1,2,3,4,5,6]) @?= EQ,
+    testCase "stripLeading0 [1,2,3,4,5,6]" $
+      (stripLeading0 (Seq.fromList [1,2,3,4,5,6])) `compare`
+      (Seq.fromList [1,2,3,4,5,6]) @?= EQ,
+    testCase "stripTrailing0 [1,2,3,4,5,6]" $
+      (stripTrailing0 (Seq.fromList [1,2,3,4,5,6])) `compare`
+      (Seq.fromList [1,2,3,4,5,6]) @?= EQ
   ]
