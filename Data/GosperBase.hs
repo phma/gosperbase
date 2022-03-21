@@ -254,3 +254,16 @@ shiftRRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
 shiftRRjust limbs n = Seq.take (length res - (fromIntegral m)) res where
   res = shiftRLimbs (shiftRSmall limbs (n `mod` 11)) (n `div` 11)
   m = n `div` 11 + 1
+
+addRjust_c :: Word32 -> Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+addRjust_c 0 Seq.Empty ys = ys
+addRjust_c 0 xs Seq.Empty = xs
+addRjust_c c Seq.Empty ys = addRjust_c c (Seq.singleton 0) ys
+addRjust_c c xs Seq.Empty = addRjust_c c xs (Seq.singleton 0)
+addRjust_c c (xs:|>x) (ys:|>y) = (addRjust_c c1 xs ys):|>z where
+  (z,c1) = addLimbs x y c
+
+addRjust :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+-- Add right-justified mantissas (Eisenstein integers).
+-- The result will have 0 or 1 more limb than the longer input.
+addRjust = addRjust_c 0
