@@ -267,3 +267,16 @@ addRjust :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
 -- Add right-justified mantissas (Eisenstein integers).
 -- The result will have 0 or 1 more limb than the longer input.
 addRjust = addRjust_c 0
+
+-- Mantissa multiplication does not depend on which end they're justified on.
+
+mulMant_pair :: Word32 -> Seq.Seq Word32 -> Seq.Seq (Word32,Word32)
+mulMant_pair 0 _ = Seq.Empty
+mulMant_pair a Seq.Empty = Seq.Empty
+mulMant_pair a (bs:|>b) = (mulMant_pair a bs):|>(mulLimbs a b)
+
+addCarriesLimb :: Word32 -> Seq.Seq (Word32,Word32) -> Seq.Seq Word32
+addCarriesLimb 0 Seq.Empty = Seq.Empty
+addCarriesLimb c Seq.Empty = Seq.singleton c
+addCarriesLimb c (xs:|>(a,b)) = (addCarriesLimb d xs):|>s where
+  (s,d) = addLimbs a 0 c
