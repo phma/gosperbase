@@ -150,11 +150,28 @@ add343s_c c (x:xs) (y:ys) = z:add343s_c c1 xs ys where
 add343s :: Integral n => [n] -> [n] -> [n]
 add343s = add343s_c 0
 
-addCarries343 :: Integral n => n -> [(n,n)] -> [n]
-addCarries343 0 [] = []
-addCarries343 c [] = [c]
-addCarries343 c ((a,b):xs) = s:addCarries343 d xs where
-  (s,d) = add343c a 0 c
+addCarries343 :: Integral n => n -> n -> [(n,n)] -> [n]
+{-
+  Example (in decimal): 8*16384 is [(2,3),(4,6),(4,2),(8,4),(8,0)]
+  0 0 [(2,3),(4,6),(4,2),(8,4),(8,0)] -> s=2 d=0
+    3 0 [(4,6),(4,2),(8,4),(8,0)] -> s=7 d=0
+      6 0 [(4,2),(8,4),(8,0)] -> s=0 d=1
+	2 1 [(8,4),(8,0)] -> s=1 d=1
+	  4 1 [(8,0)] -> s=3 d=1
+	    0 1 []
+	    [1]
+	  [3,1]
+	[1,3,1]
+      [0,1,3,1]
+    [7,0,1,3,1]
+  [2,7,0,1,3,1] which is 131072.
+-}
+addCarries343 0 0 [] = []
+addCarries343 0 c [] = [c]
+addCarries343 g 0 [] = [g]
+addCarries343 g c [] = addCarries343 g c [(0,0)]
+addCarries343 g c ((a,b):xs) = s:addCarries343 b d xs where
+  (s,d) = add343c a g c
 
 mul343c :: Integral n => n -> n -> (n,n)
 mul343c a b = (fromIntegral p,fromIntegral c) where
@@ -169,7 +186,7 @@ mul343s_pair a [] = []
 mul343s_pair a (b:bs) = (mul343c a b):mul343s_pair a bs
 
 mul343s_dig :: Integral n => n -> [n] -> [n]
-mul343s_dig a b = addCarries343 0 (mul343s_pair a b)
+mul343s_dig a b = addCarries343 0 0 (mul343s_pair a b)
 
 mul343s :: Integral n => [n] -> [n] -> [n]
 mul343s [] _ = []
