@@ -73,6 +73,12 @@ unitTests = testGroup "Unit tests"
       (add7 3 4 0) `compare` (0,0) @?= EQ,
     testCase "add7 1 1 1" $
       (add7 1 1 1) `compare` (3,1) @?= EQ,
+    testCase "add7s [0,0,0,6,6,6,6,6,6] [6,6,6,6,6,6,0,0,0]" $
+      (add7s [0,0,0,6,6,6,6,6,6] [6,6,6,6,6,6,0,0,0]) `compare` [6,6,6,5,4,4,5,5,5,6] @?= EQ,
+      -- 342 is 666 in base 7.
+      -- [342,229,285,6] is [666,445,555,006] in base 7, thus matching the above.
+    testCase "addCarries343 0 0 [(342,342),(342,342)]" $
+      (addCarries343 0 0 [(342,342),(342,342)]) `compare` [342,229,285,6] @?= EQ,
     testCase "stripLeading0 [0,1,2,3,4,5,6,0]" $
       (stripLeading0 (Seq.fromList [0,1,2,3,4,5,6,0])) `compare`
       (Seq.fromList [1,2,3,4,5,6,0]) @?= EQ,
