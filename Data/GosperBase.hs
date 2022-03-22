@@ -292,8 +292,10 @@ mulMant_pair 0 _ = Seq.Empty
 mulMant_pair a Seq.Empty = Seq.Empty
 mulMant_pair a (bs:|>b) = (mulMant_pair a bs):|>(mulLimbs a b)
 
-addCarriesLimb :: Word32 -> Seq.Seq (Word32,Word32) -> Seq.Seq Word32
-addCarriesLimb 0 Seq.Empty = Seq.Empty
-addCarriesLimb c Seq.Empty = Seq.singleton c
-addCarriesLimb c (xs:|>(a,b)) = (addCarriesLimb d xs):|>s where
-  (s,d) = addLimbs a 0 c
+addCarriesLimb :: Word32 -> Word32 -> Seq.Seq (Word32,Word32) -> Seq.Seq Word32
+addCarriesLimb 0 0 Seq.Empty = Seq.Empty
+addCarriesLimb 0 c Seq.Empty = Seq.singleton c
+addCarriesLimb g 0 Seq.Empty = Seq.singleton g
+addCarriesLimb g c Seq.Empty = addCarriesLimb g c (Seq.singleton (0,0))
+addCarriesLimb g c (xs:|>(a,b)) = (addCarriesLimb b d xs):|>s where
+  (s,d) = addLimbs a g c
