@@ -299,3 +299,6 @@ addCarriesLimb g 0 Seq.Empty = Seq.singleton g
 addCarriesLimb g c Seq.Empty = addCarriesLimb g c (Seq.singleton (0,0))
 addCarriesLimb g c (xs:|>(a,b)) = (addCarriesLimb b d xs):|>s where
   (s,d) = addLimbs a g c
+
+mulMantLimb :: Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+mulMantLimb a b = addCarriesLimb 0 0 (mulMant_pair a b)
