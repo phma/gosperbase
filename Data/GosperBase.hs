@@ -285,6 +285,15 @@ addRjust :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
 -- The result will have 0 or 1 more limb than the longer input.
 addRjust = addRjust_c 0
 
+addLjust :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+-- Add left-justified mantissas (floating-point numbers).
+-- The result will have one more limb on the left.
+addLjust a Seq.Empty = 0<|a
+addLjust Seq.Empty b = 0<|b
+addLjust (a:<|as) (b:<|bs) = c<|d<|es where
+  e:<|es = addLjust as bs
+  (d,c) = addLimbs a b e
+
 -- Mantissa multiplication does not depend on which end they're justified on.
 
 mulMant_pair :: Word32 -> Seq.Seq Word32 -> Seq.Seq (Word32,Word32)
