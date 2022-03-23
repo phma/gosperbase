@@ -311,3 +311,7 @@ addCarriesLimb g c (xs:|>(a,b)) = (addCarriesLimb b d xs):|>s where
 
 mulMantLimb :: Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
 mulMantLimb a b = addCarriesLimb 0 0 (mulMant_pair a b)
+
+mulMantShort :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+mulMantShort Seq.Empty _ = Seq.Empty
+mulMantShort (as:|>a) bs = addRjust (mulMantLimb a bs) ((mulMantShort as bs)|>0)
