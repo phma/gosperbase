@@ -322,3 +322,6 @@ mulMantLimb a b = addCarriesLimb 0 0 (mulMant_pair a b)
 mulMantShort :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
 mulMantShort Seq.Empty _ = Seq.Empty
 mulMantShort (as:|>a) bs = addRjust (mulMantLimb a bs) ((mulMantShort as bs)|>0)
+
+mulMant :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+mulMant as bs = lengthenRjust (Seq.length as + Seq.length bs) (mulMantShort as bs)
