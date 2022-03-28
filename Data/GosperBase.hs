@@ -246,6 +246,13 @@ splitLimb n limb = (a,b) where
   a = limb `div` y
   b = (limb `mod` y) * x
 
+lengthenRjust :: Int -> Seq.Seq Word32 -> Seq.Seq Word32
+-- Adds zeroes or removes numbers from the start until it has the right length.
+lengthenRjust n xs =
+  if n > length xs
+  then (Seq.replicate (n - Seq.length xs) 0) >< xs
+  else Seq.drop (Seq.length xs - n) xs
+
 shiftLSmall :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
 -- n is in [0..11]. Values outside this range return garbage.
 -- Shifts limbs left by n. Result has one more limb.
