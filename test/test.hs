@@ -4,6 +4,7 @@ import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
 import Test.Tasty.HUnit
 import Data.Word
+import Data.GosperBase.Internals
 import Data.GosperBase
 import qualified Data.Sequence as Seq
 
