@@ -2,7 +2,7 @@ module Data.GosperBase.Internals where
 import Data.Array.Unboxed
 import Data.Word
 
-digitsPerLimb = 11::Word32 -- TODO make this depend on word size
+digitsPerLimb = 11::Word -- TODO make this depend on word size
 
 -- Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
@@ -45,9 +45,9 @@ join7 :: [Word32] -> Word32
 join7 [] = 0
 join7 (n:ns) = (join7 ns) * 7 + n
 
-split343 :: Word32 -> [Word32]
+split343 :: Word -> [Word32]
 split343 0 = []
-split343 n = (n `mod` 343) : split343 (n `div` 343)
+split343 n = fromIntegral (n `mod` 343) : split343 (n `div` 343)
 
 join7_3 :: [Word32] -> [Word32]
 join7_3 [] = []
@@ -55,9 +55,9 @@ join7_3 (n0:[]) = [n0]
 join7_3 (n0:n1:[]) = [7 * n1 + n0]
 join7_3 (n0:n1:n2:ns) = 49*n2+7*n1+n0 : join7_3 ns
 
-join343 :: [Word32] -> Word32
+join343 :: [Word32] -> Word
 join343 [] = 0
-join343 (n:ns) = n + 343 * join343 ns
+join343 (n:ns) = (fromIntegral n) + 343 * join343 ns
 
 add7 :: Integral n => n -> n -> n -> (n,n)
 -- a, b, c, sum3, and carry are all in [0 .. 6].

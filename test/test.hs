@@ -22,7 +22,7 @@ instance Arbitrary Digit343 where
   arbitrary :: Gen Digit343
   arbitrary = Digit343 <$> chooseInt (0,342)
 
-newtype Limb = Limb Word32 deriving Show
+newtype Limb = Limb Word deriving Show
 
 instance Arbitrary Limb where
   arbitrary :: Gen Limb
@@ -36,7 +36,7 @@ properties = testGroup "Properties" [qcProps]
 
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "split-join343" $
-      \x -> join343 (split343 (x :: Word32)) == x,
+      \x -> join343 (split343 (x :: Word)) == x,
     QC.testProperty "add7 is commutative 2" $
       \(Digit7 a) (Digit7 b) (Digit7 c) -> add7 a b c == add7 c b a,
     QC.testProperty "add7 is commutative 3" $

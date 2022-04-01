@@ -96,12 +96,12 @@ mul343s (a:as) bs = add343s (mul343s_dig a bs) (0:mul343s as bs)
 
 -- Operations on limbs (groups of eleven digits)
 
-negateLimb :: Word32 -> Word32
+negateLimb :: Word -> Word -- TODO make work when digitsPerLimb=22
 negateLimb a = 117649 * b + c where
-  b = negTable ! (a `div` 117649)
-  c = negTable ! (a `mod` 117649)
+  b = fromIntegral (negTable ! (fromIntegral (a `div` 117649)))
+  c = fromIntegral (negTable ! (fromIntegral (a `mod` 117649)))
 
-addLimbs :: Word32 -> Word32 -> Word32 -> (Word32,Word32)
+addLimbs :: Word -> Word -> Word -> (Word,Word)
 addLimbs a b c = (sum3,carry) where
   sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ [0,0,0,0]
   sum3l = take 3 sums ++ [(sums !! 3) `mod` 49]
@@ -109,7 +109,7 @@ addLimbs a b c = (sum3,carry) where
   sum3 = join343 sum3l
   carry = join343 carryl
 
-mulLimbs :: Word32 -> Word32 -> (Word32,Word32)
+mulLimbs :: Word -> Word -> (Word,Word)
 mulLimbs a b = (prod2,carry) where
   prodl = mul343s (split343 a) (split343 b) ++ [0,0,0,0]
   prod2l = take 3 prodl ++ [(prodl !! 3) `mod` 49]
@@ -139,7 +139,7 @@ stripTrailing0 Seq.Empty = Seq.Empty
 stripTrailing0 (xs:|>0) = stripTrailing0 xs
 stripTrailing0 (xs:|>x) = xs|>x
 
-splitLimb :: Word32 -> Word32 -> (Word32,Word32)
+splitLimb :: Word -> Word -> (Word,Word)
 -- n is in [0..digitsPerLimb]. Values outside this range return garbage.
 -- Shifts limb left by n digits, a being the more significant limb.
 splitLimb n limb = (a,b) where
@@ -148,14 +148,14 @@ splitLimb n limb = (a,b) where
   a = limb `div` y
   b = (limb `mod` y) * x
 
-lengthenRjust :: Int -> Seq.Seq Word32 -> Seq.Seq Word32
+lengthenRjust :: Int -> Seq.Seq Word -> Seq.Seq Word
 -- Adds zeroes or removes numbers from the start until it has the right length.
 lengthenRjust n xs =
   if n > length xs
   then (Seq.replicate (n - Seq.length xs) 0) >< xs
   else Seq.drop (Seq.length xs - n) xs
 
-shiftLSmall :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
+shiftLSmall :: Seq.Seq Word -> Word -> Seq.Seq Word
 -- n is in [0..digitsPerLimb]. Values outside this range return garbage.
 -- Shifts limbs left by n. Result has one more limb.
 shiftLSmall Seq.Empty _ = Seq.singleton 0
@@ -173,15 +173,15 @@ shiftRLimbs :: Integral a => Seq.Seq a -> a -> Seq.Seq a
 shiftRLimbs limbs 0 = limbs
 shiftRLimbs limbs n = 0 <| (shiftRLimbs limbs (n-1))
 
-shiftLRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
+shiftLRjust :: Seq.Seq Word -> Word -> Seq.Seq Word
 shiftLRjust limbs n = shiftLLimbs (shiftLSmall limbs (n `mod` digitsPerLimb)) (n `div` digitsPerLimb)
 
-shiftRRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
+shiftRRjust :: Seq.Seq Word -> Word -> Seq.Seq Word
 shiftRRjust limbs n = Seq.take (length res - (fromIntegral m)) res where
   res = shiftRLimbs (shiftRSmall limbs (n `mod` digitsPerLimb)) (n `div` digitsPerLimb)
   m = n `div` digitsPerLimb + 1
 
-addRjust_c :: Word32 -> Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+addRjust_c :: Word -> Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 addRjust_c 0 Seq.Empty ys = ys
 addRjust_c 0 xs Seq.Empty = xs
 addRjust_c c Seq.Empty ys = addRjust_c c (Seq.singleton 0) ys
@@ -189,12 +189,12 @@ addRjust_c c xs Seq.Empty = addRjust_c c xs (Seq.singleton 0)
 addRjust_c c (xs:|>x) (ys:|>y) = (addRjust_c c1 xs ys):|>z where
   (z,c1) = addLimbs x y c
 
-addRjust :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+addRjust :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 -- Add right-justified mantissas (Eisenstein integers).
 -- The result will have 0 or 1 more limb than the longer input.
 addRjust = addRjust_c 0
 
-addLjust :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+addLjust :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 -- Add left-justified mantissas (floating-point numbers).
 -- The result will have one more limb on the left.
 addLjust a Seq.Empty = 0<|a
@@ -205,12 +205,12 @@ addLjust (a:<|as) (b:<|bs) = c<|d<|es where
 
 -- Mantissa multiplication does not depend on which end they're justified on.
 
-mulMant_pair :: Word32 -> Seq.Seq Word32 -> Seq.Seq (Word32,Word32)
+mulMant_pair :: Word -> Seq.Seq Word -> Seq.Seq (Word,Word)
 mulMant_pair 0 _ = Seq.Empty
 mulMant_pair a Seq.Empty = Seq.Empty
 mulMant_pair a (bs:|>b) = (mulMant_pair a bs):|>(mulLimbs a b)
 
-addCarriesLimb :: Word32 -> Word32 -> Seq.Seq (Word32,Word32) -> Seq.Seq Word32
+addCarriesLimb :: Word -> Word -> Seq.Seq (Word,Word) -> Seq.Seq Word
 addCarriesLimb 0 0 Seq.Empty = Seq.Empty
 addCarriesLimb 0 c Seq.Empty = Seq.singleton c
 addCarriesLimb g 0 Seq.Empty = Seq.singleton g
@@ -218,12 +218,12 @@ addCarriesLimb g c Seq.Empty = addCarriesLimb g c (Seq.singleton (0,0))
 addCarriesLimb g c (xs:|>(a,b)) = (addCarriesLimb b d xs):|>s where
   (s,d) = addLimbs a g c
 
-mulMantLimb :: Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+mulMantLimb :: Word -> Seq.Seq Word -> Seq.Seq Word
 mulMantLimb a b = addCarriesLimb 0 0 (mulMant_pair a b)
 
-mulMantShort :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+mulMantShort :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 mulMantShort Seq.Empty _ = Seq.Empty
 mulMantShort (as:|>a) bs = addRjust (mulMantLimb a bs) ((mulMantShort as bs)|>0)
 
-mulMant :: Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
+mulMant :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 mulMant as bs = lengthenRjust (Seq.length as + Seq.length bs) (mulMantShort as bs)
