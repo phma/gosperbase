@@ -126,25 +126,25 @@ mulLimbs a b = (prod2,carry) where
 stripLeading0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
 -- Removes the leading 0 from a sequence of numbers.
 -- If it's a right-justified mantissa, this has no effect on the value.
--- If it's a left-justified mantissa, this multiplies by G^11.
+-- If it's a left-justified mantissa, this multiplies by G^digitsPerLimb.
 stripLeading0 Seq.Empty = Seq.Empty
 stripLeading0 (0:<|xs) = stripLeading0 xs
 stripLeading0 (x:<|xs) = x<|xs
 
 stripTrailing0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
 -- Removes the trailing 0 from a sequence of numbers.
--- If it's a right-justified mantissa, this divides by G^11.
+-- If it's a right-justified mantissa, this divides by G^digitsPerLimb.
 -- If it's a left-justified mantissa, has no effect on the value.
 stripTrailing0 Seq.Empty = Seq.Empty
 stripTrailing0 (xs:|>0) = stripTrailing0 xs
 stripTrailing0 (xs:|>x) = xs|>x
 
 splitLimb :: Word32 -> Word32 -> (Word32,Word32)
--- n is in [0..11]. Values outside this range return garbage.
+-- n is in [0..digitsPerLimb]. Values outside this range return garbage.
 -- Shifts limb left by n digits, a being the more significant limb.
 splitLimb n limb = (a,b) where
   x = 7 ^ n
-  y = 7 ^ (11-n)
+  y = 7 ^ (digitsPerLimb-n)
   a = limb `div` y
   b = (limb `mod` y) * x
 
@@ -156,14 +156,14 @@ lengthenRjust n xs =
   else Seq.drop (Seq.length xs - n) xs
 
 shiftLSmall :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
--- n is in [0..11]. Values outside this range return garbage.
+-- n is in [0..digitsPerLimb]. Values outside this range return garbage.
 -- Shifts limbs left by n. Result has one more limb.
 shiftLSmall Seq.Empty _ = Seq.singleton 0
 shiftLSmall (limb:<|limbs) n = splh<|(spll+res)<|ress where
   (splh,spll) = splitLimb n limb
   res:<|ress = shiftLSmall limbs n
 
-shiftRSmall limbs n = shiftLSmall limbs (11-n)
+shiftRSmall limbs n = shiftLSmall limbs (digitsPerLimb-n)
 
 shiftLLimbs :: Integral a => Seq.Seq a -> a -> Seq.Seq a
 shiftLLimbs limbs 0 = limbs
@@ -174,12 +174,12 @@ shiftRLimbs limbs 0 = limbs
 shiftRLimbs limbs n = 0 <| (shiftRLimbs limbs (n-1))
 
 shiftLRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
-shiftLRjust limbs n = shiftLLimbs (shiftLSmall limbs (n `mod` 11)) (n `div` 11)
+shiftLRjust limbs n = shiftLLimbs (shiftLSmall limbs (n `mod` digitsPerLimb)) (n `div` digitsPerLimb)
 
 shiftRRjust :: Seq.Seq Word32 -> Word32 -> Seq.Seq Word32
 shiftRRjust limbs n = Seq.take (length res - (fromIntegral m)) res where
-  res = shiftRLimbs (shiftRSmall limbs (n `mod` 11)) (n `div` 11)
-  m = n `div` 11 + 1
+  res = shiftRLimbs (shiftRSmall limbs (n `mod` digitsPerLimb)) (n `div` digitsPerLimb)
+  m = n `div` digitsPerLimb + 1
 
 addRjust_c :: Word32 -> Seq.Seq Word32 -> Seq.Seq Word32 -> Seq.Seq Word32
 addRjust_c 0 Seq.Empty ys = ys

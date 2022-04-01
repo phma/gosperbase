@@ -2,6 +2,8 @@ module Data.GosperBase.Internals where
 import Data.Array.Unboxed
 import Data.Word
 
+digitsPerLimb = 11::Word32 -- TODO make this depend on word size
+
 -- Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
 -- 1,12, 3,34, 5,16, 0
