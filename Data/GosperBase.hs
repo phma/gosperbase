@@ -14,29 +14,6 @@ import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
    For layout of all numbers up to 3 digits, see doc/GosperBase.ps .
 -}
 
--- Operations on limbs (groups of eleven digits)
-
-negateLimb :: Word -> Word -- TODO make work when digitsPerLimb=22
-negateLimb a = 117649 * b + c where
-  b = fromIntegral (negTable ! (fromIntegral (a `div` 117649)))
-  c = fromIntegral (negTable ! (fromIntegral (a `mod` 117649)))
-
-addLimbs :: Word -> Word -> Word -> (Word,Word)
-addLimbs a b c = (sum3,carry) where
-  sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ [0,0,0,0]
-  sum3l = take 3 sums ++ [(sums !! 3) `mod` 49]
-  carryl = (sums !! 3) `div` 49 : (drop 4 sums)
-  sum3 = join343 sum3l
-  carry = join343 carryl
-
-mulLimbs :: Word -> Word -> (Word,Word)
-mulLimbs a b = (prod2,carry) where
-  prodl = mul343s (split343 a) (split343 b) ++ [0,0,0,0]
-  prod2l = take 3 prodl ++ [(prodl !! 3) `mod` 49]
-  carryl = (prodl !! 3) `div` 49 : (drop 4 prodl)
-  prod2 = join343 prod2l
-  carry = join343 carryl
-
 {-
   A mantissa is a sequence of limbs. There are two kinds: right-justified,
   for integers, and left-justified, for floating point. Addition is different,
