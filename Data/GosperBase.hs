@@ -100,6 +100,10 @@ addLjust (a:<|as) (b:<|bs) = c<|d<|es where
   e:<|es = addLjust as bs
   (d,c) = addLimbs a b e
 
+negateMantissa :: Seq.Seq Word -> Seq.Seq Word
+negateMantissa Seq.Empty = Seq.Empty
+negateMantissa (as:|>a) = (negateMantissa as) :|> (negateLimb a)
+
 -- Mantissa multiplication does not depend on which end they're justified on.
 
 mulMant_pair :: Word -> Seq.Seq Word -> Seq.Seq (Word,Word)
