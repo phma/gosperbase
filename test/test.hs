@@ -103,5 +103,7 @@ unitTests = testGroup "Unit tests"
     testCase "splitLimb 10 (5^13)" $
       (splitLimb 10 (5^13)) `compare` (174386160,1412376245) @?= EQ,
     testCase "splitLimb 11 (5^13)" $
-      (splitLimb 11 (5^13)) `compare` (1220703125,0) @?= EQ
+      (splitLimb 11 (5^13)) `compare` (1220703125,0) @?= EQ,
+    testCase "negateMantissa [5882353,94117647]" $
+      (negateMantissa (Seq.fromList [5882353,94117647])) `compare` (Seq.fromList [34608461,235436809]) @?= EQ
   ]
