@@ -1,4 +1,7 @@
-module Data.GosperBase.Internals where
+module Data.GosperBase.Internals
+  ( join343,mul343c,addLimbs,negateLimb,split343,
+    add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,negateMantissa )
+  where
 import Data.Array.Unboxed
 import Data.Word
 import qualified Data.Sequence as Seq
