@@ -37,6 +37,10 @@ mTable=array ((0,0),(6,6)) -- Multiplication table for Gosper base
     ((6,0),0), ((6,1),6), ((6,2),5), ((6,3),4), ((6,4),3), ((6,5),2), ((6,6),1)
   ] :: Array (Word8,Word8) Word8
 
+rTable=array (0,6) -- Reciprocal table for Gosper base
+  [ (0,0), (1,1), (2,4), (3,5), (4,2), (5,3), (6,6)
+  ] :: Array Word8 Word8
+
 -- Operations on single digits
 
 th7dig :: (Integral a) => Int -> a -> a
@@ -107,6 +111,10 @@ mul7s (a:as) bs = add7s (mul7s_dig a bs) (0:mul7s as bs)
 
 mul343 :: Word32 -> Word32 -> Word32
 mul343 a b = join7 (mul7s (split7 a) (split7 b))
+
+recip7 :: Integral n => n -> n
+-- Reciprocal of a digit. Returns 0 for 0.
+recip7 a = fromIntegral (rTable ! (fromIntegral a))
 
 -- Operations on groups of three and six digits
 -- The maximum sum is 6566 in base 7; the maximum product is 656543 in base 7.
