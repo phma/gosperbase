@@ -1,6 +1,7 @@
 module Data.GosperBase.Internals
-  ( join343,mul343c,msdPosLimb,addLimbs,negateLimb,split343,
-    add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,negateMantissa )
+  ( join343,mul343c,addLimbs,negateLimb,split343,
+    add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,negateMantissa,
+    msdPosRjust )
   where
 import Data.Array.Unboxed
 import Data.Word
@@ -271,6 +272,13 @@ splitLimb n limb = (a,b) where
   y = 7 ^ (digitsPerLimb-n)
   a = limb `div` y
   b = (limb `mod` y) * x
+
+msdPosRjust :: Seq.Seq Word -> (Word,Word)
+-- ^Returns the most significant digit and its position.
+-- Given 0, returns (0,0); given 64205316420531, returns (6,14).
+msdPosRjust Seq.Empty = (0,0)
+msdPosRjust (0:<|ns) = msdPosRjust (stripLeading0 ns)
+msdPosRjust (n:<|ns) = plusSnd (digitsPerLimb * (fromIntegral (Seq.length ns))) (msdPosLimb n)
 
 lengthenRjust :: Int -> Seq.Seq Word -> Seq.Seq Word
 -- ^Adds zeroes or removes numbers from the start until it has the right length.
