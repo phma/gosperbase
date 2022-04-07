@@ -1,5 +1,5 @@
 module Data.GosperBase.Internals
-  ( join343,mul343c,addLimbs,negateLimb,split343,
+  ( join343,mul343c,msdPosLimb,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,negateMantissa )
   where
 import Data.Array.Unboxed
@@ -197,6 +197,20 @@ mul343s [] _ = []
 mul343s (a:as) bs = add343s (mul343s_dig a bs) (0:mul343s as bs)
 
 -- Operations on limbs (groups of eleven digits)
+
+plusSnd :: Integral a => a -> (b,a) -> (b,a)
+plusSnd n (x,y) = (x,n+y)
+
+msdPosLimb :: Word -> (Word,Word)
+-- ^Returns the most significant digit and its position.
+-- Given 0, returns (0,0); given 6, returns (6,1).
+msdPosLimb n
+  | n >= 7^8	= plusSnd 8 (msdPosLimb (n `div` 7^8))
+  | n >= 7^4	= plusSnd 4 (msdPosLimb (n `div` 7^4))
+  | n >= 7^2	= plusSnd 2 (msdPosLimb (n `div` 7^2))
+  | n >= 7^1	= plusSnd 1 (msdPosLimb (n `div` 7^1))
+  | n >= 7^0	= (n,1)
+  | otherwise	= (0,0)
 
 negateLimb :: Word -> Word -- TODO make work when digitsPerLimb=22
 negateLimb a = 117649 * b + c where
