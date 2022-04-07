@@ -9,7 +9,7 @@ import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 
 digitsPerLimb = 11::Word -- TODO make this depend on word size
 
--- Addition table for Gosper base. In base 7:
+-- |Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
 -- 1,12, 3,34, 5,16, 0
 -- 2, 3,24,25, 6, 0,61
@@ -27,6 +27,7 @@ aTable=array ((0,0),(6,6))
     ((6,0), 6), ((6,1), 0), ((6,2),43), ((6,3), 2), ((6,4),31), ((6,5), 4), ((6,6),47)
   ] :: Array (Word8,Word8) Word8
 
+-- |Multiplication table for Gosper base
 mTable=array ((0,0),(6,6)) -- Multiplication table for Gosper base
   [ ((0,0),0), ((0,1),0), ((0,2),0), ((0,3),0), ((0,4),0), ((0,5),0), ((0,6),0),
     ((1,0),0), ((1,1),1), ((1,2),2), ((1,3),3), ((1,4),4), ((1,5),5), ((1,6),6),
@@ -37,7 +38,8 @@ mTable=array ((0,0),(6,6)) -- Multiplication table for Gosper base
     ((6,0),0), ((6,1),6), ((6,2),5), ((6,3),4), ((6,4),3), ((6,5),2), ((6,6),1)
   ] :: Array (Word8,Word8) Word8
 
-rTable=array (0,6) -- Reciprocal table for Gosper base
+-- |Reciprocal table for Gosper base
+rTable=array (0,6)
   [ (0,0), (1,1), (2,4), (3,5), (4,2), (5,3), (6,6)
   ] :: Array Word8 Word8
 
@@ -69,6 +71,8 @@ join343 [] = 0
 join343 (n:ns) = (fromIntegral n) + 343 * join343 ns
 
 add7 :: Integral n => n -> n -> n -> (n,n)
+-- ^Adds three Gosper base digits, returning a tuple of the sum and the carry.
+-- This is a full adder.
 -- a, b, c, sum3, and carry are all in [0 .. 6].
 add7 a b c = (fromIntegral sum3,fromIntegral carry) where
   a8 = fromIntegral a
@@ -95,7 +99,7 @@ add343 :: Word32 -> Word32 -> Word32
 add343 a b = join7 (add7s (split7 a) (split7 b))
 
 neg7 :: Integral n => n -> n
--- Negates a digit in [0..6]. Any other argument will get a wrong answer.
+-- ^Negates a digit in [0..6]. Any other argument will get a wrong answer.
 neg7 0 = 0
 neg7 a = 7 - a
 
@@ -132,6 +136,8 @@ negTable=array (0,117648)
   :: Array Word32 Word32
 
 add343c :: Integral n => n -> n -> n -> (n,n)
+-- ^Adds three three-digit numbers in Gosper base, returning three-digit sum and carry.
+-- This is a full adder.
 -- a, b, c, sum3, and carry are all in [0 .. 342].
 add343c a b c = (fromIntegral sum3,fromIntegral carry) where
   a16 = fromIntegral a
@@ -155,7 +161,9 @@ add343s :: Integral n => [n] -> [n] -> [n]
 add343s = add343s_c 0
 
 addCarries343 :: Integral n => n -> n -> [(n,n)] -> [n]
-{-
+{-^
+  Converts a list of (sum,carry) tuples to a list of digits in base G^3.
+  The tuples result from multiplying a list by a digit.
   Example (in decimal): 8*16384 is [(2,3),(4,6),(4,2),(8,4),(8,0)]
   0 0 [(2,3),(4,6),(4,2),(8,4),(8,0)] -> s=2 d=0
     3 0 [(4,6),(4,2),(8,4),(8,0)] -> s=7 d=0
@@ -240,7 +248,7 @@ mulLimbs a b = (prod2,carry) where
 -}
 
 stripLeading0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
--- Removes the leading 0 from a sequence of numbers.
+-- ^Removes the leading 0 from a sequence of numbers.
 -- If it's a right-justified mantissa, this has no effect on the value.
 -- If it's a left-justified mantissa, this multiplies by G^digitsPerLimb.
 stripLeading0 Seq.Empty = Seq.Empty
@@ -248,7 +256,7 @@ stripLeading0 (0:<|xs) = stripLeading0 xs
 stripLeading0 (x:<|xs) = x<|xs
 
 stripTrailing0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
--- Removes the trailing 0 from a sequence of numbers.
+-- ^Removes the trailing 0 from a sequence of numbers.
 -- If it's a right-justified mantissa, this divides by G^digitsPerLimb.
 -- If it's a left-justified mantissa, has no effect on the value.
 stripTrailing0 Seq.Empty = Seq.Empty
@@ -256,7 +264,7 @@ stripTrailing0 (xs:|>0) = stripTrailing0 xs
 stripTrailing0 (xs:|>x) = xs|>x
 
 splitLimb :: Word -> Word -> (Word,Word)
--- n is in [0..digitsPerLimb]. Values outside this range return garbage.
+-- ^n is in [0..digitsPerLimb]. Values outside this range return garbage.
 -- Shifts limb left by n digits, a being the more significant limb.
 splitLimb n limb = (a,b) where
   x = 7 ^ n
@@ -265,14 +273,14 @@ splitLimb n limb = (a,b) where
   b = (limb `mod` y) * x
 
 lengthenRjust :: Int -> Seq.Seq Word -> Seq.Seq Word
--- Adds zeroes or removes numbers from the start until it has the right length.
+-- ^Adds zeroes or removes numbers from the start until it has the right length.
 lengthenRjust n xs =
   if n > length xs
   then (Seq.replicate (n - Seq.length xs) 0) >< xs
   else Seq.drop (Seq.length xs - n) xs
 
 shiftLSmall :: Seq.Seq Word -> Word -> Seq.Seq Word
--- n is in [0..digitsPerLimb]. Values outside this range return garbage.
+-- ^n is in [0..digitsPerLimb]. Values outside this range return garbage.
 -- Shifts limbs left by n. Result has one more limb.
 shiftLSmall Seq.Empty _ = Seq.singleton 0
 shiftLSmall (limb:<|limbs) n = splh<|(spll+res)<|ress where
@@ -306,12 +314,12 @@ addRjust_c c (xs:|>x) (ys:|>y) = (addRjust_c c1 xs ys):|>z where
   (z,c1) = addLimbs x y c
 
 addRjust :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
--- Add right-justified mantissas (Eisenstein integers).
+-- ^Add right-justified mantissas (Eisenstein integers).
 -- The result will have 0 or 1 more limb than the longer input.
 addRjust = addRjust_c 0
 
 addLjust :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
--- Add left-justified mantissas (floating-point numbers).
+-- ^Add left-justified mantissas (floating-point numbers).
 -- The result will have one more limb on the left.
 addLjust a Seq.Empty = 0<|a
 addLjust Seq.Empty b = 0<|b
