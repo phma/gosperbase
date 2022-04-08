@@ -1,7 +1,7 @@
 module Data.GosperBase.Internals
   ( join343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,negateMantissa,
-    msdPosRjust )
+    msdPosRjust,msdPosLjust )
   where
 import Data.Array.Unboxed
 import Data.Word
@@ -210,6 +210,9 @@ mul343s (a:as) bs = add343s (mul343s_dig a bs) (0:mul343s as bs)
 plusSnd :: Integral a => a -> (b,a) -> (b,a)
 plusSnd n (x,y) = (x,n+y)
 
+negSnd :: Integral a => (b,a) -> (b,a)
+negSnd (x,y) = (x,(-y))
+
 msdPosLimb :: Word -> (Word,Word)
 -- ^Returns the most significant digit and its position.
 -- Given 0, returns (0,0); given 6, returns (6,1).
@@ -279,6 +282,14 @@ msdPosRjust :: Seq.Seq Word -> (Word,Word)
 msdPosRjust Seq.Empty = (0,0)
 msdPosRjust (0:<|ns) = msdPosRjust (stripLeading0 ns)
 msdPosRjust (n:<|ns) = plusSnd (digitsPerLimb * (fromIntegral (Seq.length ns))) (msdPosLimb n)
+
+msdPosLjust :: Seq.Seq Word -> (Word,Word)
+-- ^Returns the most significant digit and the number of zeroes before it.
+-- Given 0, returns (0,0); given 64205316420531, returns (6,8),
+-- assuming 11 or 22 digits per limb.
+msdPosLjust Seq.Empty = (0,0)
+msdPosLjust (0:<|ns) = plusSnd digitsPerLimb (msdPosLjust ns)
+msdPosLjust (n:<|ns) = plusSnd digitsPerLimb (negSnd (msdPosLimb n))
 
 lengthenRjust :: Int -> Seq.Seq Word -> Seq.Seq Word
 -- ^Adds zeroes or removes numbers from the start until it has the right length.
