@@ -1,5 +1,5 @@
 module Data.GosperBase.Internals
-  ( join343,mul343c,addLimbs,negateLimb,split343,
+  ( digitsPerLimb,join343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,negateMantissa,
     msdPosRjust,msdPosLjust,addRjust,addLjust,mulMant )
   where
