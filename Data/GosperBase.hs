@@ -13,3 +13,13 @@ import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
     4 5
    For layout of all numbers up to 3 digits, see doc/GosperBase.ps .
 -}
+
+newtype GosperInteger = GosperInteger (Seq.Seq Word) deriving (Show)
+
+iAdd :: GosperInteger -> GosperInteger -> GosperInteger
+iAdd (GosperInteger a) (GosperInteger b) =
+  GosperInteger (stripLeading0 (addRjust a b))
+
+iMult :: GosperInteger -> GosperInteger -> GosperInteger
+iMult (GosperInteger a) (GosperInteger b) =
+  GosperInteger (stripLeading0 (mulMant a b))
