@@ -4,6 +4,7 @@ import Data.Word
 import Data.GosperBase.Internals
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
+import Data.Char
 
 {- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
    because it is the scale factor from one Gosper island to the next bigger one.
@@ -21,6 +22,16 @@ chunkDigitsInt :: Seq.Seq Char -> Maybe (Seq.Seq (Seq.Seq Char))
 -- and groups them into chunks of digitsPerLimb.
 chunkDigitsInt (as:|>'G') = Just (Seq.chunksOf (fromIntegral digitsPerLimb) (Seq.reverse as))
 chunkDigitsInt as = Nothing
+
+parseChunkRjust :: Seq.Seq Char -> Maybe Word
+parseChunkRjust Seq.Empty = Just 0
+parseChunkRjust (n:<|ns) =
+  let ms = parseChunkRjust ns
+  in case ms of
+    Just num -> if (n >= '0' && n < '7')
+		   then Just (7 * num + fromIntegral (ord n - ord '0'))
+		   else Nothing
+    Nothing -> Nothing
 
 iAdd :: GosperInteger -> GosperInteger -> GosperInteger
 iAdd (GosperInteger a) (GosperInteger b) =
