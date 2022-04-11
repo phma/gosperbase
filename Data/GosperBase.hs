@@ -51,8 +51,11 @@ parse1InitTail (a,b) =
 
 parseGosperInteger :: String -> [(GosperInteger, String)]
 parseGosperInteger str =
-  let its = zip (inits str) (tails str)
+  let its = zip (inits str) (tails str) -- TODO stop on invalid char
   in catMaybes (fmap parse1InitTail its)
+
+instance Read GosperInteger where
+  readsPrec _ str = parseGosperInteger str
 
 iAdd :: GosperInteger -> GosperInteger -> GosperInteger
 iAdd (GosperInteger a) (GosperInteger b) =
