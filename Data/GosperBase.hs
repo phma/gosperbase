@@ -5,6 +5,8 @@ import Data.GosperBase.Internals
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 import Data.Char
+import Data.List
+import Data.Maybe
 
 {- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
    because it is the scale factor from one Gosper island to the next bigger one.
@@ -39,6 +41,18 @@ parseRjust as =
   in case ns of
     Just chunks -> traverse parseChunkRjust chunks
     Nothing -> Nothing
+
+parse1InitTail :: (String, String) -> Maybe (GosperInteger, String)
+parse1InitTail (a,b) =
+  let aParse = parseRjust (Seq.fromList a)
+  in case aParse of
+    Just mant -> Just (GosperInteger mant,b)
+    Nothing -> Nothing
+
+parseGosperInteger :: String -> [(GosperInteger, String)]
+parseGosperInteger str =
+  let its = zip (inits str) (tails str)
+  in catMaybes (fmap parse1InitTail its)
 
 iAdd :: GosperInteger -> GosperInteger -> GosperInteger
 iAdd (GosperInteger a) (GosperInteger b) =
