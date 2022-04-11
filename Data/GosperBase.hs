@@ -33,6 +33,13 @@ parseChunkRjust (n:<|ns) =
 		   else Nothing
     Nothing -> Nothing
 
+parseRjust :: Seq.Seq Char -> Maybe (Seq.Seq Word)
+parseRjust as =
+  let ns = chunkDigitsInt as
+  in case ns of
+    Just chunks -> traverse parseChunkRjust chunks
+    Nothing -> Nothing
+
 iAdd :: GosperInteger -> GosperInteger -> GosperInteger
 iAdd (GosperInteger a) (GosperInteger b) =
   GosperInteger (stripLeading0 (addRjust a b))
