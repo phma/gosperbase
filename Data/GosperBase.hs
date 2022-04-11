@@ -20,7 +20,7 @@ newtype GosperInteger = GosperInteger (Seq.Seq Word) deriving (Show)
 chunkDigitsInt :: Seq.Seq Char -> Maybe (Seq.Seq (Seq.Seq Char))
 -- ^If the string ends in 'G', reverses the rest of the characters
 -- and groups them into chunks of digitsPerLimb.
-chunkDigitsInt (as:|>'G') = Just (Seq.chunksOf (fromIntegral digitsPerLimb) (Seq.reverse as))
+chunkDigitsInt (as:|>'G') = Just (Seq.reverse (Seq.chunksOf (fromIntegral digitsPerLimb) (Seq.reverse as)))
 chunkDigitsInt as = Nothing
 
 parseChunkRjust :: Seq.Seq Char -> Maybe Word
