@@ -35,6 +35,10 @@ parseChunkRjust (n:<|ns) =
 		   else Nothing
     Nothing -> Nothing
 
+showLimb :: Word -> Word -> String
+showLimb _ 0 = ""
+showLimb val ndig = chr (fromIntegral ((val `div` 7 ^ (ndig-1)) `mod` 7) + ord '0') : (showLimb val (ndig-1))
+
 parseRjust :: Seq.Seq Char -> Maybe (Seq.Seq Word)
 parseRjust as =
   let ns = chunkDigitsInt as
