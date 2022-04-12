@@ -46,6 +46,14 @@ parseRjust as =
     Just chunks -> traverse parseChunkRjust chunks
     Nothing -> Nothing
 
+showRjust' :: Seq.Seq Word -> String
+showRjust' Seq.Empty = ""
+showRjust' (a:<|as) = (showLimb a digitsPerLimb) ++ (showRjust' as)
+
+showRjust :: Seq.Seq Word -> String
+showRjust Seq.Empty = "0"
+showRjust (a:<|as) = (showLimb a (snd (msdPosLimb a))) ++ (showRjust' as)
+
 parse1InitTail :: (String, String) -> Maybe (GosperInteger, String)
 parse1InitTail (a,b) =
   let aParse = parseRjust (Seq.fromList a)
