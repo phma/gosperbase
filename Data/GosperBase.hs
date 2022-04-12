@@ -17,7 +17,7 @@ import Data.Maybe
    For layout of all numbers up to 3 digits, see doc/GosperBase.ps .
 -}
 
-newtype GosperInteger = GosperInteger (Seq.Seq Word) deriving (Show)
+newtype GosperInteger = GosperInteger (Seq.Seq Word)
 
 chunkDigitsInt :: Seq.Seq Char -> Maybe (Seq.Seq (Seq.Seq Char))
 -- ^If the string ends in 'G', reverses the rest of the characters
@@ -68,6 +68,9 @@ parseGosperInteger str =
 
 instance Read GosperInteger where
   readsPrec _ str = parseGosperInteger str
+
+instance Show GosperInteger where
+  show (GosperInteger m) = showRjust m ++ "G"
 
 iAdd :: GosperInteger -> GosperInteger -> GosperInteger
 iAdd (GosperInteger a) (GosperInteger b) =
