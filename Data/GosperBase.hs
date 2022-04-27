@@ -80,13 +80,23 @@ iMult :: GosperInteger -> GosperInteger -> GosperInteger
 iMult (GosperInteger a) (GosperInteger b) =
   GosperInteger (stripLeading0 (mulMant a b))
 
+iNegate :: GosperInteger -> GosperInteger
+iNegate (GosperInteger a) = GosperInteger (negateMantissa a)
+
 -- Define constants used in conversion
 
 zero = read("0G") :: GosperInteger
 one = read("1G") :: GosperInteger
-two = read("12G") :: GosperInteger
+ω = read("2G") :: GosperInteger
 naturals = 0 : map (+1) naturals
 gnaturals = zero : map (iAdd one) gnaturals
 g256 = gnaturals !! 256
 
 byteTable=array (0,255) (take 256 (zip naturals gnaturals))
+
+integerToGosperInteger :: Integer -> GosperInteger
+integerToGosperInteger a
+  | a < 0     = iNegate (integerToGosperInteger (- a))
+  | a < 256   = byteTable ! a
+  | otherwise = iAdd (byteTable ! (a `mod` 256))
+		     (iMult g256 (integerToGosperInteger (a `div` 256)))
