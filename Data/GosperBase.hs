@@ -1,5 +1,5 @@
 module Data.GosperBase where
-import Data.Array.Unboxed
+import Data.Array
 import Data.Word
 import Data.GosperBase.Internals
 import qualified Data.Sequence as Seq
@@ -79,3 +79,14 @@ iAdd (GosperInteger a) (GosperInteger b) =
 iMult :: GosperInteger -> GosperInteger -> GosperInteger
 iMult (GosperInteger a) (GosperInteger b) =
   GosperInteger (stripLeading0 (mulMant a b))
+
+-- Define constants used in conversion
+
+zero = read("0G") :: GosperInteger
+one = read("1G") :: GosperInteger
+two = read("12G") :: GosperInteger
+naturals = 0 : map (+1) naturals
+gnaturals = zero : map (iAdd one) gnaturals
+g256 = gnaturals !! 256
+
+byteTable=array (0,255) (take 256 (zip naturals gnaturals))
