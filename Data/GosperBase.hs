@@ -83,6 +83,9 @@ iMult (GosperInteger a) (GosperInteger b) =
 iNegate :: GosperInteger -> GosperInteger
 iNegate (GosperInteger a) = GosperInteger (negateMantissa a)
 
+iSub :: GosperInteger -> GosperInteger -> GosperInteger
+iSub a b = iAdd a (iNegate b)
+
 -- Define constants used in conversion
 
 zero = read("0G") :: GosperInteger
