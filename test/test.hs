@@ -105,5 +105,9 @@ unitTests = testGroup "Unit tests"
     testCase "splitLimb 11 (5^13)" $
       (splitLimb 11 (5^13)) `compare` (1220703125,0) @?= EQ,
     testCase "negateMantissa [5882353,94117647]" $
-      (negateMantissa (Seq.fromList [5882353,94117647])) `compare` (Seq.fromList [34608461,235436809]) @?= EQ
+      (negateMantissa (Seq.fromList [5882353,94117647])) `compare` (Seq.fromList [34608461,235436809]) @?= EQ,
+    testCase "integerToGosperInteger 3^40*5^27" $
+      integerToGosperInteger (3^40*5^27) @?= iMult (integerToGosperInteger (3^40)) (integerToGosperInteger (5^27)),
+    testCase "integerToGosperInteger 3^40+5^27" $
+      integerToGosperInteger (3^40+5^27) @?= iAdd (integerToGosperInteger (3^40)) (integerToGosperInteger (5^27))
   ]
