@@ -10,6 +10,9 @@ import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 
 digitsPerLimb = 11::Word -- TODO make this depend on word size
+blkl = digitsPerLimb `div` 3
+blkh = (digitsPerLimb+2) `div` 3
+p7lo = 7 ^ (digitsPerLimb `mod` 3)
 
 -- |Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
