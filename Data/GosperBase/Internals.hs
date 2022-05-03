@@ -234,9 +234,10 @@ addLimbs :: Word -> Word -> Word -> (Word,Word)
 addLimbs a b c = (sum3,carry) where
   sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ [0,0,0,0]
   sum3l = take 3 sums ++ [(sums !! 3) `mod` 49]
-  carryl = (sums !! 3) : (drop 4 sums)
+  carrylow = fromIntegral (sums !! 3) `div` 49
+  carryl = drop 4 sums
   sum3 = join343 sum3l
-  carry = (join343 carryl) `div` 49
+  carry = (join343 carryl) * 7 + carrylow
 
 -- If a limb is 11 digits, splits them into [abc,def,ghi,jk] (lsd is at left).
 -- Then multiplies them, getting [abc,def,ghi,jkl,mno,pqr,stu,v].
