@@ -238,13 +238,20 @@ addLimbs a b c = (sum3,carry) where
   sum3 = join343 sum3l
   carry = (join343 carryl) `div` 49
 
+-- If a limb is 11 digits, splits them into [abc,def,ghi,jk] (lsd is at left).
+-- Then multiplies them, getting [abc,def,ghi,jkl,mno,pqr,stu,v].
+-- Then splits them into ([abc,def,ghi,jk],[lmn,opq,rst,uv]).
+-- 22 digits: [abc,def,ghi,jkl,mno,pqr,stu,v]
+-- [abc,def,ghi,jkl,mno,pqr,stu,vαβ,γδε,ζηθ,ικλ,μνξ,οπρ,στυ,φχ]
+-- ([abc,def,ghi,jkl,mno,pqr,stu,v],[αβγ,δεζ,ηθι,κλμ,νξο,πρσ,τυφ,χ]).
 mulLimbs :: Word -> Word -> (Word,Word)
 mulLimbs a b = (prod2,carry) where
   prodl = mul343s (split343 a) (split343 b) ++ [0,0,0,0]
   prod2l = take 3 prodl ++ [(prodl !! 3) `mod` 49]
-  carryl = (prodl !! 3) : (drop 4 prodl)
+  carrylow = fromIntegral (prodl !! 3) `div` 49
+  carryl = drop 4 prodl
   prod2 = join343 prod2l
-  carry = (join343 carryl) `div` 49
+  carry = (join343 carryl) * 7 + carrylow
 
 {-
   A mantissa is a sequence of limbs. There are two kinds: right-justified,
