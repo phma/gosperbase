@@ -65,6 +65,10 @@ split343 :: Word -> [Word32]
 split343 0 = []
 split343 n = fromIntegral (n `mod` 343) : split343 (n `div` 343)
 
+split6dig :: Word -> [Word32]
+split6dig 0 = []
+split6dig n = fromIntegral (n `mod` 117649) : split6dig (n `div` 117649)
+
 join7_3 :: [Word32] -> [Word32]
 join7_3 [] = []
 join7_3 (n0:[]) = [n0]
@@ -74,6 +78,10 @@ join7_3 (n0:n1:n2:ns) = 49*n2+7*n1+n0 : join7_3 ns
 join343 :: [Word32] -> Word
 join343 [] = 0
 join343 (n:ns) = (fromIntegral n) + 343 * join343 ns
+
+join6dig :: [Word32] -> Word
+join6dig [] = 0
+join6dig (n:ns) = (fromIntegral n) + 117649 * join6dig ns
 
 add7 :: Integral n => n -> n -> n -> (n,n)
 -- ^Adds three Gosper base digits, returning a tuple of the sum and the carry.
@@ -228,10 +236,8 @@ msdPosLimb n
   | n >= 7^0	= (n,1)
   | otherwise	= (0,0)
 
-negateLimb :: Word -> Word -- TODO make work when digitsPerLimb=22
-negateLimb a = 117649 * b + c where
-  b = fromIntegral (negTable ! (fromIntegral (a `div` 117649)))
-  c = fromIntegral (negTable ! (fromIntegral (a `mod` 117649)))
+negateLimb :: Word -> Word
+negateLimb a = join6dig (map (negTable !) (split6dig a))
 
 addLimbs :: Word -> Word -> Word -> (Word,Word)
 addLimbs a b c = (sum3,carry) where
