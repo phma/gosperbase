@@ -13,6 +13,7 @@ digitsPerLimb = 11::Word -- TODO make this depend on word size
 blkl = fromIntegral (digitsPerLimb `div` 3)
 blkh = fromIntegral ((digitsPerLimb+2) `div` 3)
 p7lo = fromIntegral (7 ^ (digitsPerLimb `mod` 3))
+p7up = fromIntegral (343 `div` p7lo)
 
 -- |Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
@@ -246,7 +247,7 @@ addLimbs a b c = (sum3,carry) where
   carrylow = fromIntegral ((sums !! blkl) `div` p7lo)
   carryl = drop blkh sums
   sum3 = join343 sum3l
-  carry = (join343 carryl) * 7 + carrylow
+  carry = (join343 carryl) * p7up + carrylow
 
 -- If a limb is 11 digits, splits them into [abc,def,ghi,jk] (lsd is at left).
 -- Then multiplies them, getting [abc,def,ghi,jkl,mno,pqr,stu,v].
@@ -261,7 +262,7 @@ mulLimbs a b = (prod2,carry) where
   carrylow = fromIntegral ((prodl !! blkl) `div` p7lo)
   carryl = drop blkh prodl
   prod2 = join343 prod2l
-  carry = (join343 carryl) * 7 + carrylow
+  carry = (join343 carryl) * p7up + carrylow
 
 {-
   A mantissa is a sequence of limbs. There are two kinds: right-justified,
