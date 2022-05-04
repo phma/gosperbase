@@ -9,7 +9,8 @@ import Data.Word
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 
-digitsPerLimb = 11::Word -- TODO make this depend on word size
+div7s = (maxBound::Word) : map (`div` 7) div7s
+digitsPerLimb = fromIntegral (length (takeWhile (>0) div7s) - 1) :: Word
 blkl = fromIntegral (digitsPerLimb `div` 3)
 blkh = fromIntegral ((digitsPerLimb+2) `div` 3)
 p7lo = fromIntegral (7 ^ (digitsPerLimb `mod` 3))
