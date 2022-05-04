@@ -10,9 +10,9 @@ import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 
 digitsPerLimb = 11::Word -- TODO make this depend on word size
-blkl = digitsPerLimb `div` 3
-blkh = (digitsPerLimb+2) `div` 3
-p7lo = 7 ^ (digitsPerLimb `mod` 3)
+blkl = fromIntegral (digitsPerLimb `div` 3)
+blkh = fromIntegral ((digitsPerLimb+2) `div` 3)
+p7lo = fromIntegral (7 ^ (digitsPerLimb `mod` 3))
 
 -- |Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
@@ -241,10 +241,10 @@ negateLimb a = join6dig (map (negTable !) (split6dig a))
 
 addLimbs :: Word -> Word -> Word -> (Word,Word)
 addLimbs a b c = (sum3,carry) where
-  sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ [0,0,0,0]
-  sum3l = take 3 sums ++ [(sums !! 3) `mod` 49]
-  carrylow = fromIntegral (sums !! 3) `div` 49
-  carryl = drop 4 sums
+  sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ (replicate blkh 0)
+  sum3l = take blkl sums ++ [(sums !! blkl) `mod` p7lo]
+  carrylow = fromIntegral ((sums !! blkl) `div` p7lo)
+  carryl = drop blkh sums
   sum3 = join343 sum3l
   carry = (join343 carryl) * 7 + carrylow
 
@@ -256,10 +256,10 @@ addLimbs a b c = (sum3,carry) where
 -- ([abc,def,ghi,jkl,mno,pqr,stu,v],[αβγ,δεζ,ηθι,κλμ,νξο,πρσ,τυφ,χ]).
 mulLimbs :: Word -> Word -> (Word,Word)
 mulLimbs a b = (prod2,carry) where
-  prodl = mul343s (split343 a) (split343 b) ++ [0,0,0,0]
-  prod2l = take 3 prodl ++ [(prodl !! 3) `mod` 49]
-  carrylow = fromIntegral (prodl !! 3) `div` 49
-  carryl = drop 4 prodl
+  prodl = mul343s (split343 a) (split343 b) ++ (replicate blkh 0)
+  prod2l = take blkl prodl ++ [(prodl !! blkl) `mod` p7lo]
+  carrylow = fromIntegral ((prodl !! blkl) `div` p7lo)
+  carryl = drop blkh prodl
   prod2 = join343 prod2l
   carry = (join343 carryl) * 7 + carrylow
 
