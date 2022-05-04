@@ -243,8 +243,8 @@ negateLimb a = join6dig (map (negTable !) (split6dig a))
 addLimbs :: Word -> Word -> Word -> (Word,Word)
 addLimbs a b c = (sum3,carry) where
   sums = (add343s (add343s (split343 a) (split343 b)) (split343 c)) ++ (replicate blkh 0)
-  sum3l = take blkl sums ++ [(sums !! blkl) `mod` p7lo]
-  carrylow = fromIntegral ((sums !! blkl) `div` p7lo)
+  sum3l = take blkl sums ++ (if (blkl==blkh) then [] else [(sums !! blkl) `mod` p7lo])
+  carrylow = fromIntegral (if (blkl==blkh) then 0 else ((sums !! blkl) `div` p7lo))
   carryl = drop blkh sums
   sum3 = join343 sum3l
   carry = (join343 carryl) * p7up + carrylow
@@ -258,8 +258,8 @@ addLimbs a b c = (sum3,carry) where
 mulLimbs :: Word -> Word -> (Word,Word)
 mulLimbs a b = (prod2,carry) where
   prodl = mul343s (split343 a) (split343 b) ++ (replicate blkh 0)
-  prod2l = take blkl prodl ++ [(prodl !! blkl) `mod` p7lo]
-  carrylow = fromIntegral ((prodl !! blkl) `div` p7lo)
+  prod2l = take blkl prodl ++ (if (blkl==blkh) then [] else [(prodl !! blkl) `mod` p7lo])
+  carrylow = fromIntegral (if (blkl==blkh) then 0 else ((prodl !! blkl) `div` p7lo))
   carryl = drop blkh prodl
   prod2 = join343 prod2l
   carry = (join343 carryl) * p7up + carrylow
