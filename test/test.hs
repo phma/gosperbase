@@ -92,18 +92,6 @@ unitTests = testGroup "Unit tests"
     testCase "stripTrailing0 [1,2,3,4,5,6]" $
       (stripTrailing0 (Seq.fromList [1,2,3,4,5,6])) @?=
       (Seq.fromList [1,2,3,4,5,6]),
-    testCase "splitLimb 0 (5^13)" $
-      (splitLimb 0 (5^13)) @?= (0,1220703125),
-    testCase "splitLimb 1 (5^13)" $
-      (splitLimb 1 (5^13)) @?= (4,635614903),
-    testCase "splitLimb 5 (5^13)" $
-      (splitLimb 5 (5^13)) @?= (10375,1592463250),
-    testCase "splitLimb 6 (5^13)" $
-      (splitLimb 6 (5^13)) @?= (72630,1260609035),
-    testCase "splitLimb 10 (5^13)" $
-      (splitLimb 10 (5^13)) @?= (174386160,1412376245),
-    testCase "splitLimb 11 (5^13)" $
-      (splitLimb 11 (5^13)) @?= (1220703125,0),
     testCase "negateMantissa [5882353,94117647]" $
       (negateMantissa (Seq.fromList [5882353,94117647])) @?= (Seq.fromList [34608461,235436809]),
     testCase "integerToGosperInteger 3^40*5^27" $
