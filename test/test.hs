@@ -49,63 +49,63 @@ qcProps = testGroup "(checked by QuickCheck)"
 
 unitTests = testGroup "Unit tests"
   [ testCase "split343 0" $
-      (split343 0) `compare` [] @?= EQ,
+      (split343 0) @?= [],
     testCase "split343 1" $
-      (split343 1) `compare` [1] @?= EQ,
+      (split343 1) @?= [1],
     testCase "split343 342" $
-      (split343 342) `compare` [342] @?= EQ,
+      (split343 342) @?= [342],
     testCase "split343 343" $
-      (split343 343) `compare` [0,1] @?= EQ,
+      (split343 343) @?= [0,1],
     testCase "split343 524288" $
-      (split343 524288) `compare` [184,156,4] @?= EQ,
+      (split343 524288) @?= [184,156,4],
     testCase "split343 531441" $
-      (split343 531441) `compare` [134,177,4] @?= EQ,
+      (split343 531441) @?= [134,177,4],
     testCase "split343 129140163" $
-      (split343 129140163) `compare` [320,230,68,3] @?= EQ,
+      (split343 129140163) @?= [320,230,68,3],
     testCase "split343 134217728" $
-      (split343 134217728) `compare` [113,285,111,3] @?= EQ,
+      (split343 134217728) @?= [113,285,111,3],
     testCase "add7 0 0 0" $
-      (add7 0 0 0) `compare` (0,0) @?= EQ,
+      (add7 0 0 0) @?= (0,0),
     testCase "add7 1 6 0" $
-      (add7 1 6 0) `compare` (0,0) @?= EQ,
+      (add7 1 6 0) @?= (0,0),
     testCase "add7 2 5 0" $
-      (add7 2 5 0) `compare` (0,0) @?= EQ,
+      (add7 2 5 0) @?= (0,0),
     testCase "add7 3 4 0" $
-      (add7 3 4 0) `compare` (0,0) @?= EQ,
+      (add7 3 4 0) @?= (0,0),
     testCase "add7 1 1 1" $
-      (add7 1 1 1) `compare` (3,1) @?= EQ,
+      (add7 1 1 1) @?= (3,1),
     testCase "add7s [0,0,0,6,6,6,6,6,6] [6,6,6,6,6,6,0,0,0]" $
-      (add7s [0,0,0,6,6,6,6,6,6] [6,6,6,6,6,6,0,0,0]) `compare` [6,6,6,5,4,4,5,5,5,6] @?= EQ,
+      (add7s [0,0,0,6,6,6,6,6,6] [6,6,6,6,6,6,0,0,0]) @?= [6,6,6,5,4,4,5,5,5,6],
       -- 342 is 666 in base 7.
       -- [342,229,285,6] is [666,445,555,006] in base 7, thus matching the above.
     testCase "addCarries343 0 0 [(342,342),(342,342)]" $
-      (addCarries343 0 0 [(342,342),(342,342)]) `compare` [342,229,285,6] @?= EQ,
+      (addCarries343 0 0 [(342,342),(342,342)]) @?= [342,229,285,6],
     testCase "stripLeading0 [0,1,2,3,4,5,6,0]" $
-      (stripLeading0 (Seq.fromList [0,1,2,3,4,5,6,0])) `compare`
-      (Seq.fromList [1,2,3,4,5,6,0]) @?= EQ,
+      (stripLeading0 (Seq.fromList [0,1,2,3,4,5,6,0])) @?=
+      (Seq.fromList [1,2,3,4,5,6,0]),
     testCase "stripTrailing0 [0,1,2,3,4,5,6,0]" $
-      (stripTrailing0 (Seq.fromList [0,1,2,3,4,5,6,0])) `compare`
-      (Seq.fromList [0,1,2,3,4,5,6]) @?= EQ,
+      (stripTrailing0 (Seq.fromList [0,1,2,3,4,5,6,0])) @?=
+      (Seq.fromList [0,1,2,3,4,5,6]),
     testCase "stripLeading0 [1,2,3,4,5,6]" $
-      (stripLeading0 (Seq.fromList [1,2,3,4,5,6])) `compare`
-      (Seq.fromList [1,2,3,4,5,6]) @?= EQ,
+      (stripLeading0 (Seq.fromList [1,2,3,4,5,6])) @?=
+      (Seq.fromList [1,2,3,4,5,6]),
     testCase "stripTrailing0 [1,2,3,4,5,6]" $
-      (stripTrailing0 (Seq.fromList [1,2,3,4,5,6])) `compare`
-      (Seq.fromList [1,2,3,4,5,6]) @?= EQ,
+      (stripTrailing0 (Seq.fromList [1,2,3,4,5,6])) @?=
+      (Seq.fromList [1,2,3,4,5,6]),
     testCase "splitLimb 0 (5^13)" $
-      (splitLimb 0 (5^13)) `compare` (0,1220703125) @?= EQ,
+      (splitLimb 0 (5^13)) @?= (0,1220703125),
     testCase "splitLimb 1 (5^13)" $
-      (splitLimb 1 (5^13)) `compare` (4,635614903) @?= EQ,
+      (splitLimb 1 (5^13)) @?= (4,635614903),
     testCase "splitLimb 5 (5^13)" $
-      (splitLimb 5 (5^13)) `compare` (10375,1592463250) @?= EQ,
+      (splitLimb 5 (5^13)) @?= (10375,1592463250),
     testCase "splitLimb 6 (5^13)" $
-      (splitLimb 6 (5^13)) `compare` (72630,1260609035) @?= EQ,
+      (splitLimb 6 (5^13)) @?= (72630,1260609035),
     testCase "splitLimb 10 (5^13)" $
-      (splitLimb 10 (5^13)) `compare` (174386160,1412376245) @?= EQ,
+      (splitLimb 10 (5^13)) @?= (174386160,1412376245),
     testCase "splitLimb 11 (5^13)" $
-      (splitLimb 11 (5^13)) `compare` (1220703125,0) @?= EQ,
+      (splitLimb 11 (5^13)) @?= (1220703125,0),
     testCase "negateMantissa [5882353,94117647]" $
-      (negateMantissa (Seq.fromList [5882353,94117647])) `compare` (Seq.fromList [34608461,235436809]) @?= EQ,
+      (negateMantissa (Seq.fromList [5882353,94117647])) @?= (Seq.fromList [34608461,235436809]),
     testCase "integerToGosperInteger 3^40*5^27" $
       integerToGosperInteger (3^40*5^27) @?= iMult (integerToGosperInteger (3^40)) (integerToGosperInteger (5^27)),
     testCase "integerToGosperInteger 3^40+5^27" $
