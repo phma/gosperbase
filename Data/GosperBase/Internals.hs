@@ -1,8 +1,8 @@
 module Data.GosperBase.Internals
-  ( digitsPerLimb,join343,mul343c,addLimbs,negateLimb,split343,
+  ( digitsPerLimb,minExp,maxExp,join343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
     msdPosLimb,negateMantissa,
-    msdPosRjust,msdPosLjust,addRjust,addLjust,mulMant )
+    msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant )
   where
 import Data.Array.Unboxed
 import Data.Word

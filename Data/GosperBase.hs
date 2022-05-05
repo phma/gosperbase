@@ -106,18 +106,18 @@ integerToGosperInteger a
 
 -- Normal exponent mantissa; the mantissa is left-justified and starts
 -- after the base point.
-data BareGosperFloat = Normal Int (Seq.Seq Word) | Inf | Nan
-{-
+data BareGosperFloat = Normal Int (Seq.Seq Word) | Inf | Nan deriving Show
+
 normalize :: BareGosperFloat -> BareGosperFloat
 normalize Inf = Inf
 normalize Nan = Nan
-normalize Normal exp mant =
+normalize (Normal exp mant) =
   if nexp > maxExp
   then Inf
   else Normal nexp nmant
   where
-    nzeros0 = snd (msdPosLjust mant)
+    nzeros0 = fromIntegral (snd (msdPosLjust mant))
     nzeros = if exp - nzeros0 < minExp then exp - minExp else nzeros0
     nexp = exp - nzeros
-    nmant = shiftLLjust mant nzeros
--}
+    nmant = shiftLLjust mant (fromIntegral nzeros)
+
