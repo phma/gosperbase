@@ -348,6 +348,11 @@ shiftRRjust limbs n = Seq.take (length res - (fromIntegral m)) res where
   res = shiftRLimbs (shiftRSmall limbs (n `mod` digitsPerLimb)) (n `div` digitsPerLimb)
   m = n `div` digitsPerLimb + 1
 
+shiftLLjust :: Seq.Seq Word -> Word -> Seq.Seq Word
+shiftLLjust limbs n = Seq.drop m shifted where
+  shifted = shiftLSmall (shiftLLimbs limbs (n `div` digitsPerLimb)) (n `mod` digitsPerLimb)
+  m = Seq.length shifted - Seq.length limbs
+
 addRjust_c :: Word -> Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 addRjust_c 0 Seq.Empty ys = ys
 addRjust_c 0 xs Seq.Empty = xs
