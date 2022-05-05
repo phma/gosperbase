@@ -103,3 +103,21 @@ integerToGosperInteger a
   | a < 256   = byteTable ! a
   | otherwise = iAdd (byteTable ! (a `mod` 256))
 		     (iMult g256 (integerToGosperInteger (a `div` 256)))
+
+-- Normal exponent mantissa; the mantissa is left-justified and starts
+-- after the base point.
+data BareGosperFloat = Normal Int (Seq.Seq Word) | Inf | Nan
+{-
+normalize :: BareGosperFloat -> BareGosperFloat
+normalize Inf = Inf
+normalize Nan = Nan
+normalize Normal exp mant =
+  if nexp > maxExp
+  then Inf
+  else Normal nexp nmant
+  where
+    nzeros0 = snd (msdPosLjust mant)
+    nzeros = if exp - nzeros0 < minExp then exp - minExp else nzeros0
+    nexp = exp - nzeros
+    nmant = shiftLLjust mant nzeros
+-}

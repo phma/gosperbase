@@ -16,6 +16,10 @@ blkh = fromIntegral ((digitsPerLimb+2) `div` 3)
 p7lo = fromIntegral (7 ^ (digitsPerLimb `mod` 3))
 p7up = fromIntegral (343 `div` p7lo)
 
+-- Divided by 2 so that, when multiplying two numbers, the exponents won't overflow.
+minExp = (minBound::Int) `div` 2
+maxExp = (maxBound::Int) `div` 2
+
 -- |Addition table for Gosper base. In base 7:
 -- 0, 1, 2, 3, 4, 5, 6
 -- 1,12, 3,34, 5,16, 0
