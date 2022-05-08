@@ -1,6 +1,6 @@
 module Data.GosperBase.Internals
   ( digitsPerLimb,minExp,maxExp,join343,mul343c,addLimbs,negateLimb,split343,
-    add7,add7s,addCarries343,conj6dig,stripLeading0,stripTrailing0,splitLimb,
+    add7,add7s,addCarries343,conjLimb,stripLeading0,stripTrailing0,splitLimb,
     msdPosLimb,negateMantissa,
     msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant )
   where
@@ -162,6 +162,10 @@ negTable=array (0,117648)
   [(fromIntegral x,join7 (map neg7 (split7 x))) | x<-[0..117648]]
   :: Array Word32 Word32
 
+conjTable=array (0,117648)
+  [(x,conj6dig x) | x<-[0..117648]]
+  :: Array Word32 Word32
+
 add343c :: Integral n => n -> n -> n -> (n,n)
 -- ^Adds three three-digit numbers in Gosper base, returning three-digit sum and carry.
 -- This is a full adder.
@@ -276,6 +280,16 @@ mulLimbs a b = (prod2,carry) where
   carryl = drop blkh prodl
   prod2 = join343 prod2l
   carry = (join343 carryl) * p7up + carrylow
+
+conjLimb :: Word -> (Word,Word)
+conjLimb a
+  | a<7^6 = (fromIntegral (conjTable ! (fromIntegral a)),0)
+  | otherwise =
+    let upper6s = fst (conjLimb (a `div` 7^6)) -- snd=0
+	lower6 = fst (conjLimb (a `mod` 7^6))
+	(up6lo,up6hi) = mulLimbs upper6s (fromIntegral (conj6dig (7^6)))
+	(sum1lo,sum1hi) = addLimbs lower6 up6lo 0
+    in (sum1lo,fst (addLimbs up6hi sum1hi 0))
 
 {-
   A mantissa is a sequence of limbs. There are two kinds: right-justified,
