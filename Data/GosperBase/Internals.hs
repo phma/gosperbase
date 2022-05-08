@@ -1,6 +1,6 @@
 module Data.GosperBase.Internals
   ( digitsPerLimb,minExp,maxExp,join343,mul343c,addLimbs,negateLimb,split343,
-    add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
+    add7,add7s,addCarries343,conj6dig,stripLeading0,stripTrailing0,splitLimb,
     msdPosLimb,negateMantissa,
     msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant )
   where
@@ -136,8 +136,16 @@ mul343 :: Word32 -> Word32 -> Word32
 mul343 a b = join7 (mul7s (split7 a) (split7 b))
 
 recip7 :: Integral n => n -> n
--- Reciprocal of a digit. Returns 0 for 0.
+-- Reciprocal of a digit. Returns 0 for 0. Also conjugate of a digit.
 recip7 a = fromIntegral (rTable ! (fromIntegral a))
+
+conj6dig :: Word32 -> Word32
+-- Computes the conjugate up to 10 digits.
+-- 26 is 35 in base 7, which means the conjugate of the base
+-- (2.5+0.866i, where the base is 2.5-0.866i).
+conj6dig n
+  | n<7 = recip7 n
+  | otherwise = (recip7 (n `mod` 7)) `add343` (26 `mul343` (conj6dig (n `div` 7)))
 
 -- Operations on groups of three and six digits
 -- The maximum sum is 6566 in base 7; the maximum product is 656543 in base 7.
