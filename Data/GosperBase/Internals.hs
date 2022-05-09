@@ -1,8 +1,9 @@
 module Data.GosperBase.Internals
   ( digitsPerLimb,minExp,maxExp,join343,mul343c,addLimbs,negateLimb,split343,
-    add7,add7s,addCarries343,conjLimb,stripLeading0,stripTrailing0,splitLimb,
+    add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
     msdPosLimb,negateMantissa,
-    msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant )
+    msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant,
+    conjMant,conjMantRjust )
   where
 import Data.Array.Unboxed
 import Data.Word
@@ -291,6 +292,11 @@ conjLimb a
 	(sum1lo,sum1hi) = addLimbs lower6 up6lo 0
     in (sum1lo,fst (addLimbs up6hi sum1hi 0))
 
+conjBaseLimb =
+  mulLimbs
+    (fst (conjLimb (7^(digitsPerLimb `div` 2))))
+    (fst (conjLimb (7^((digitsPerLimb+1) `div` 2))))
+
 {-
   A mantissa is a sequence of limbs. There are two kinds: right-justified,
   for integers, and left-justified, for floating point. Addition is different,
@@ -425,3 +431,16 @@ mulMantShort (as:|>a) bs = addRjust (mulMantLimb a bs) ((mulMantShort as bs)|>0)
 
 mulMant :: Seq.Seq Word -> Seq.Seq Word -> Seq.Seq Word
 mulMant as bs = lengthenRjust (Seq.length as + Seq.length bs) (mulMantShort as bs)
+
+conjBaseLimbSeq = Seq.fromList [snd conjBaseLimb,fst conjBaseLimb]
+
+conjMantLong :: Seq.Seq Word -> Seq.Seq Word
+conjMantLong Seq.Empty = Seq.Empty
+conjMantLong (as:|>a) = addRjust conjUnitsLimb (mulMant conjBaseLimbSeq (conjMantLong as)) where
+  conjUnitsLimb = Seq.fromList [snd (conjLimb a),fst (conjLimb a)]
+
+-- |Computes the conjugate of a mantissa. The result is one limb longer.
+conjMant a = lengthenRjust (Seq.length a + 1) (conjMantLong a)
+
+-- |Computes the conjugate of a mantissa, removing leading zeroes.
+conjMantRjust a = stripLeading0 (conjMantLong a)
