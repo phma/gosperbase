@@ -104,6 +104,12 @@ integerToGosperInteger a
   | otherwise = iAdd (byteTable ! (a `mod` 256))
 		     (iMult g256 (integerToGosperInteger (a `div` 256)))
 
+conjInt :: GosperInteger -> GosperInteger
+conjInt (GosperInteger a) = GosperInteger (conjMantRjust a)
+
+normGosper :: GosperInteger -> GosperInteger
+normGosper a = a `iMult` (conjInt a)
+
 -- Normal exponent mantissa; the mantissa is left-justified and starts
 -- after the base point.
 data BareGosperFloat = Normal Int (Seq.Seq Word) | Inf | Nan deriving Show
