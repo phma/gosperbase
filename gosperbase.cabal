@@ -16,7 +16,7 @@ extra-source-files:  README.md
 Library
   default-language:    Haskell2010
   Exposed-modules:     Data.GosperBase,Data.GosperBase.Internals
-  build-depends:       base >= 4.7 && < 5, array, containers
+  build-depends:       base >= 4.7 && < 5, array, containers, arithmoi
 
 test-suite test
   default-language:     Haskell2010
@@ -24,4 +24,4 @@ test-suite test
   hs-source-dirs:	test
   main-is:		test.hs
   build-depends:	base, tasty, tasty-hunit, tasty-quickcheck, tasty-smallcheck,
-			gosperbase, containers
+			gosperbase, containers, arithmoi
