@@ -4,6 +4,7 @@ import Data.Word
 import Data.GosperBase.Internals
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
+import qualified Math.NumberTheory.Quadratic.EisensteinIntegers as Eis
 import Data.Char
 import Data.List
 import Data.Maybe

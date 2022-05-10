@@ -9,6 +9,7 @@ import Data.Array.Unboxed
 import Data.Word
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
+import qualified Math.NumberTheory.Quadratic.EisensteinIntegers as Eis
 
 div7s = (maxBound::Word) : map (`div` 7) div7s
 digitsPerLimb = fromIntegral (length (takeWhile (>0) div7s) - 1) :: Word
