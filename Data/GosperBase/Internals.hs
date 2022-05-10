@@ -69,6 +69,8 @@ conjBaseEis = 3 Eis.:+ 1
 baseLimbEis = baseEis ^ digitsPerLimb
 conjBaseLimbEis = conjBaseEis ^ digitsPerLimb
 powBaseEis = 1 : map (*baseEis) powBaseEis
+powBase6digEis = 1 : map (*baseEis^6) powBase6digEis
+powBaseLimbEis = 1 : map (*baseLimbEis) powBaseLimbEis
 
 -- Operations on single digits
 
@@ -185,6 +187,10 @@ conjTable=array (0,117648)
   [(x,conj6dig x) | x<-[0..117648]]
   :: Array Word32 Word32
 
+eisTable=array (0,117648)
+  [(x,eis6dig x) | x<-[0..117648]]
+  :: Array Word32 Eis.EisensteinInteger
+
 add343c :: Integral n => n -> n -> n -> (n,n)
 -- ^Adds three three-digit numbers in Gosper base, returning three-digit sum and carry.
 -- This is a full adder.
@@ -275,6 +281,9 @@ msdPosLimb n
 
 negateLimb :: Word -> Word
 negateLimb a = join6dig (map (negTable !) (split6dig a))
+
+eisLimb :: Word -> Eis.EisensteinInteger
+eisLimb a = sum (zipWith (*) (map (eisTable !) (split6dig a)) powBase6digEis)
 
 addLimbs :: Word -> Word -> Word -> (Word,Word)
 addLimbs a b c = (sum3,carry) where
