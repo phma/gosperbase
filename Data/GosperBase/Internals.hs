@@ -1,5 +1,6 @@
 module Data.GosperBase.Internals
-  ( digitsPerLimb,minExp,maxExp,join343,mul343c,addLimbs,negateLimb,split343,
+  ( digitsPerLimb,minExp,maxExp,baseEis,conjBaseEis,baseLimbEis,conjBaseLimbEis,
+    join343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
     msdPosLimb,negateMantissa,
     msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant,
@@ -56,9 +57,18 @@ rTable=array (0,6)
   [ (0,0), (1,1), (2,4), (3,5), (4,2), (5,3), (6,6)
   ] :: Array Word8 Word8
 
+-- |Translations of digits to Eisenstein
+digTable=array (0,6)
+  [ (0,0), (1,1), (2,0 Eis.:+ 1), (3,1 Eis.:+ 1),
+    (4,(-1) Eis.:+ (-1)), (5,0 Eis.:+ (-1)), (6,(-1))
+  ] :: Array Word32 Eis.EisensteinInteger
+
 -- Base and conjugate as Eisenstein integers
 baseEis = 2 Eis.:+ (-1)
-baseConjEis = 3 Eis.:+ 1
+conjBaseEis = 3 Eis.:+ 1
+baseLimbEis = baseEis ^ digitsPerLimb
+conjBaseLimbEis = conjBaseEis ^ digitsPerLimb
+powBaseEis = 1 : map (*baseEis) powBaseEis
 
 -- Operations on single digits
 
@@ -152,6 +162,9 @@ conj6dig :: Word32 -> Word32
 conj6dig n
   | n<7 = recip7 n
   | otherwise = (recip7 (n `mod` 7)) `add343` (26 `mul343` (conj6dig (n `div` 7)))
+
+eis6dig :: Word32 -> Eis.EisensteinInteger
+eis6dig a = sum (zipWith (*) (map (digTable !) (split7 a)) powBaseEis)
 
 -- Operations on groups of three and six digits
 -- The maximum sum is 6566 in base 7; the maximum product is 656543 in base 7.
