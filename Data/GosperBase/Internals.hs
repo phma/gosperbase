@@ -56,6 +56,10 @@ rTable=array (0,6)
   [ (0,0), (1,1), (2,4), (3,5), (4,2), (5,3), (6,6)
   ] :: Array Word8 Word8
 
+-- Base and conjugate as Eisenstein integers
+baseEis = 2 Eis.:+ (-1)
+baseConjEis = 3 Eis.:+ 1
+
 -- Operations on single digits
 
 th7dig :: (Integral a) => Int -> a -> a
