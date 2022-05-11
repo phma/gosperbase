@@ -2,7 +2,7 @@ module Data.GosperBase.Internals
   ( digitsPerLimb,minExp,maxExp,baseEis,conjBaseEis,baseLimbEis,conjBaseLimbEis,
     join343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
-    msdPosLimb,negateMantissa,
+    msdPosLimb,negateMantissa,eisMantissa,
     msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant,
     conjMant,conjMantRjust )
   where
@@ -11,6 +11,7 @@ import Data.Word
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 import qualified Math.NumberTheory.Quadratic.EisensteinIntegers as Eis
+import Data.Foldable
 
 div7s = (maxBound::Word) : map (`div` 7) div7s
 digitsPerLimb = fromIntegral (length (takeWhile (>0) div7s) - 1) :: Word
@@ -433,6 +434,9 @@ addLjust (a:<|as) (b:<|bs) = c<|d<|es where
 negateMantissa :: Seq.Seq Word -> Seq.Seq Word
 negateMantissa Seq.Empty = Seq.Empty
 negateMantissa (as:|>a) = (negateMantissa as) :|> (negateLimb a)
+
+eisMantissa :: Seq.Seq Word -> Eis.EisensteinInteger
+eisMantissa a = sum (zipWith (*) (map eisLimb (toList a)) powBaseLimbEis)
 
 -- Mantissa multiplication does not depend on which end they're justified on.
 

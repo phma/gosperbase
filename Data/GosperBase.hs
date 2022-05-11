@@ -108,6 +108,9 @@ integerToGosperInteger a
 conjInt :: GosperInteger -> GosperInteger
 conjInt (GosperInteger a) = GosperInteger (conjMantRjust a)
 
+gosperIntegerToEisensteinInteger :: GosperInteger -> Eis.EisensteinInteger
+gosperIntegerToEisensteinInteger (GosperInteger a) = eisMantissa a
+
 normGosper :: GosperInteger -> GosperInteger
 normGosper a = a `iMult` (conjInt a)
 
