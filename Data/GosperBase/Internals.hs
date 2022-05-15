@@ -2,7 +2,7 @@ module Data.GosperBase.Internals
   ( digitsPerLimb,minExp,maxExp,baseEis,conjBaseEis,baseLimbEis,conjBaseLimbEis,
     join343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
-    msdPosLimb,negateMantissa,eisMantissa,
+    msdPosLimb,mantissaSerial,negateMantissa,eisMantissa,
     msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant,
     conjMant,conjMantRjust )
   where
@@ -346,6 +346,10 @@ stripTrailing0 :: (Integral a) => Seq.Seq a -> Seq.Seq a
 stripTrailing0 Seq.Empty = Seq.Empty
 stripTrailing0 (xs:|>0) = stripTrailing0 xs
 stripTrailing0 (xs:|>x) = xs|>x
+
+mantissaSerial :: Seq.Seq Word -> Integer
+mantissaSerial Seq.Empty = 0
+mantissaSerial (xs:|>x) = (mantissaSerial xs) * 7 ^ digitsPerLimb + fromIntegral x
 
 splitLimb :: Word -> Word -> (Word,Word)
 -- ^n is in [0..digitsPerLimb]. Values outside this range return garbage.

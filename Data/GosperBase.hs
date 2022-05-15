@@ -20,6 +20,11 @@ import Data.Maybe
 
 newtype GosperInteger = GosperInteger (Seq.Seq Word) deriving (Eq)
 
+gosperSerial :: GosperInteger -> Integer
+-- ^Reinterprets the base-G representation as base 7.
+-- E.g. 2 is expressed as 12 in base G; 12 in base 7 means 9.
+gosperSerial (GosperInteger a) = mantissaSerial a
+
 chunkDigitsInt :: Seq.Seq Char -> Maybe (Seq.Seq (Seq.Seq Char))
 -- ^If the string ends in 'G', reverses the rest of the characters
 -- and groups them into chunks of digitsPerLimb.
