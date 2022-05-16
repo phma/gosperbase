@@ -18,6 +18,23 @@ import Data.Maybe
    For layout of all numbers up to 3 digits, see doc/GosperBase.ps .
 -}
 
+-- The argument of G as a fraction of 60°, expressed as a rational approximation.
+-- -0.318443422514484906575291245669
+-- -[0;3,7,7,1,3,5,5,2,3,9,2,1,2,6,1,12,2,1,6,2,1,28,3,11,25]
+argNum = -536627952198047
+argDenom = 1685159479698902
+
+tomicTable = array (0,5)
+  [(0,1),(1,3),(2,2),(3,6),(4,4),(5,5)]
+  :: Array Word Word
+
+argBasePower :: Integral a => a -> Word
+-- ^Returns the digit whose argument is closest to that of the nth power of the base.
+-- E.g. argBasePower 3 == 5 because 1000G's argument is -57.32°
+-- and 5G's argument is -60°.
+argBasePower n = tomicTable ! (fromIntegral (mod rot 6)) where
+  rot = ((fromIntegral n) * argNum + argDenom `div` 2) `div` argDenom
+
 newtype GosperInteger = GosperInteger (Seq.Seq Word) deriving (Eq)
 
 gosperSerial :: GosperInteger -> Integer
