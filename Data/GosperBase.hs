@@ -7,6 +7,7 @@ import Data.Sequence ((><), (<|), (|>), Seq((:<|)), Seq((:|>)))
 import qualified Math.NumberTheory.Quadratic.EisensteinIntegers as Eis
 import Data.Char
 import Data.List
+import Data.Bits
 import Data.Maybe
 
 {- This computes complex numbers in base 2.5-√(-3/4), called the Gosper base
@@ -36,6 +37,16 @@ argBasePower n = tomicTable ! (fromIntegral (mod rot 6)) where
   rot = ((fromIntegral n) * argNum + argDenom `div` 2) `div` argDenom
 
 newtype GosperInteger = GosperInteger (Seq.Seq Word) deriving (Eq)
+
+qdSign :: GosperInteger -> Int
+-- If n is real, returns its correct sign. If n is within 30° of the imaginary
+-- axis, returns +1 or -1 depending on its magnitude. Two "positive" numbers
+-- can add up to a "negative" one, or vice versa, hence qd = quick and dirty.
+qdSign (GosperInteger n) = s where
+  (msd,pos) = msdPosRjust n
+  msdRot = (fromIntegral msd) `mul343` (fromIntegral (argBasePower (pos-1)))
+  s = if msdRot == 0 then 0 else
+    if (msdRot .&. 1) == 1 then 1 else -1
 
 gosperSerial :: GosperInteger -> Integer
 -- ^Reinterprets the base-G representation as base 7.

@@ -1,6 +1,6 @@
 module Data.GosperBase.Internals
   ( digitsPerLimb,minExp,maxExp,baseEis,conjBaseEis,baseLimbEis,conjBaseLimbEis,
-    join343,mul343c,addLimbs,negateLimb,split343,
+    join343,mul343,mul343c,addLimbs,negateLimb,split343,
     add7,add7s,addCarries343,stripLeading0,stripTrailing0,splitLimb,
     msdPosLimb,mantissaSerial,negateMantissa,eisMantissa,
     msdPosRjust,msdPosLjust,shiftLLjust,addRjust,addLjust,mulMant,
