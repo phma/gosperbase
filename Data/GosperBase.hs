@@ -120,6 +120,10 @@ iNegate (GosperInteger a) = GosperInteger (negateMantissa a)
 iSub :: GosperInteger -> GosperInteger -> GosperInteger
 iSub a b = iAdd a (iNegate b)
 
+instance Ord GosperInteger where
+  -- compare can give circular ordering of purely imaginary numbers.
+  compare a b = compare (qdSign (iSub a b)) 0
+
 -- Define constants used in conversion
 
 zero = read("0G") :: GosperInteger
