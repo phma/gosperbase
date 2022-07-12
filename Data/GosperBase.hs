@@ -120,6 +120,19 @@ iNegate (GosperInteger a) = GosperInteger (negateMantissa a)
 iSub :: GosperInteger -> GosperInteger -> GosperInteger
 iSub a b = iAdd a (iNegate b)
 
+iSignum :: GosperInteger -> GosperInteger
+iSignum a =
+  let n1 = normGosper (iSub a (read "1G"))
+      n2 = normGosper (iSub a (read "2G"))
+      n3 = normGosper (iSub a (read "3G"))
+      n4 = normGosper (iSub a (read "4G"))
+      n5 = normGosper (iSub a (read "5G"))
+      n6 = normGosper (iSub a (read "6G"))
+  in case compare n1 n6 of
+    LT -> read "1G"
+    EQ -> read "0G"
+    GT -> read "6G"
+
 instance Ord GosperInteger where
   -- compare can give circular ordering of purely imaginary numbers.
   compare a b = compare (qdSign (iSub a b)) 0
