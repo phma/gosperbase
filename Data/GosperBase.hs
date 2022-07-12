@@ -129,9 +129,24 @@ iSignum a =
       n5 = normGosper (iSub a (read "5G"))
       n6 = normGosper (iSub a (read "6G"))
   in case compare n1 n6 of
-    LT -> read "1G"
-    EQ -> read "0G"
-    GT -> read "6G"
+    LT -> case compare n1 n3 of
+      LT -> case compare n1 n5 of
+	LT -> read "1G"
+	EQ -> read "5G"
+	GT -> read "5G"
+      EQ -> read "1G"
+      GT -> read "3G"
+    EQ -> case compare n3 n4 of
+      LT -> read "3G"
+      EQ -> read "0G"
+      GT -> read "4G"
+    GT -> case compare n6 n4 of
+      LT -> case compare n6 n2 of
+	LT -> read "6G"
+	EQ -> read "2G"
+	GT -> read "2G"
+      EQ -> read "6G"
+      GT -> read "4G"
 
 instance Ord GosperInteger where
   -- compare can give circular ordering of purely imaginary numbers.
